@@ -1,0 +1,1 @@
+import{j as t}from"./index-DxRfHsvT.js";function s(){return t.jsxs("div",{className:"max-w-7xl mx-auto px-6 py-8",children:[t.jsx("h2",{className:"text-2xl font-bold font-outfit",children:"Citizen Dashboard"}),t.jsx("p",{className:"text-sm text-gray-500 mt-1",children:"Report emergencies and monitor active cases."})]})}export{s as default};
