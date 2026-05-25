@@ -4,6 +4,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useUIStore } from '../store/uiStore';
 import { getRescues, upvoteRescue } from '../services/rescueService';
+import { useSocketEvents } from '../services/socketService';
+import { SOCKET_EVENTS } from '../shared/socketEvents';
 import { ShieldAlert, Compass, Heart, Radio, MapPin, CheckCircle2, ChevronRight, Eye } from 'lucide-react';
 
 // Swap leaflet markers default icon urls so they load correctly inside Vite production builds
@@ -72,6 +74,15 @@ export default function RescueMap() {
       setLoading(false);
     }
   };
+
+  useSocketEvents({
+    enabled: true,
+    eventNames: [SOCKET_EVENTS.RESCUE_CREATED, SOCKET_EVENTS.RESCUE_UPDATED, SOCKET_EVENTS.RESCUE_STATUS_UPDATED],
+    onEvent: (evt, payload) => {
+      // Re-fetch the rescues when there is an update to keep the map in sync
+      loadRescues();
+    }
+  });
 
   const handleSelectCase = (item) => {
     setSelectedCase(item);

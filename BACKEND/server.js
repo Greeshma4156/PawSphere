@@ -9,7 +9,7 @@ import morgan from 'morgan';
 dotenv.config();
 
 // Imports from config & utils
-import connectDB, { getDBStatus } from './config/db.js';
+import { connectDB, getDBStatus } from './config/db.js';
 import logger from './utils/logger.js';
 import { seedMongoDB } from './utils/seedData.js';
 import { seedInMemoryDB } from './utils/inMemoryDb.js';
@@ -32,6 +32,9 @@ import errorHandler from './middleware/error.js';
 
 // Socket files
 import { handleSocketConnections } from './sockets/socketHandler.js';
+
+// Jobs
+import { runEscalationEngine } from './jobs/escalationJob.js';
 
 // Initialize express app
 const app = express();
@@ -100,6 +103,11 @@ server.listen(PORT, async () => {
   } else {
     await seedInMemoryDB();
   }
+
+  // Start Background Jobs (run every 1 minute for demo purposes, 15m in prod)
+  setInterval(() => {
+    runEscalationEngine(io);
+  }, 60 * 1000);
 });
 
 // Handle unhandled promise rejections gracefully

@@ -14,10 +14,7 @@ export const connectDB = async () => {
   let attempt = 0;
   while (attempt < maxAttempts) {
     try {
-      await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(mongoUri);
       isMongoConnected = true;
       logger.info('MongoDB connected');
       return;

@@ -1,39 +1,111 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ShieldAlert, Heart, Trophy, Users, ArrowRight } from 'lucide-react'
-import Hero from '../components/landing/Hero'
-import RescueFeed from '../components/landing/RescueFeed'
-import BentoFeatures from '../components/landing/BentoFeatures'
-import TimelineEngine from '../components/landing/TimelineEngine'
-import ImpactWall from '../components/landing/ImpactWall'
+import React, { Suspense, lazy } from 'react';
+import { Link } from 'react-router-dom';
+
+import Hero from '../components/landing/Hero';
+import BentoFeatures from '../components/landing/BentoFeatures';
+import TimelineEngine from '../components/landing/TimelineEngine';
+import ImpactWall from '../components/landing/ImpactWall';
+
+const LiveRescueFeedSection = lazy(() => import('../components/landing/LiveRescueFeedSection.jsx'));
+const InteractiveMapPreview = lazy(() => import('../components/landing/InteractiveMapPreview.jsx'));
+const AiDiagnosticsPreview = lazy(() => import('../components/landing/AiDiagnosticsPreview.jsx'));
+const VolunteerGamificationPreview = lazy(() => import('../components/landing/VolunteerGamificationPreview.jsx'));
+const DonationImpactPreview = lazy(() => import('../components/landing/DonationImpactPreview.jsx'));
+const RescueTimelineVisualization = lazy(() => import('../components/landing/RescueTimelineVisualization.jsx'));
+const ShelterAdoptionPreview = lazy(() => import('../components/landing/ShelterAdoptionPreview.jsx'));
+const AnalyticsImpactWall = lazy(() => import('../components/landing/AnalyticsImpactWall.jsx'));
+const RealtimeActivityTicker = lazy(() => import('../components/landing/RealtimeActivityTicker.jsx'));
+const FeaturedStoriesSection = lazy(() => import('../components/landing/FeaturedStoriesSection.jsx'));
+const MobileQuickActionDock = lazy(() => import('../components/landing/MobileQuickActionDock.jsx'));
+const PremiumFooter = lazy(() => import('../components/landing/PremiumFooter.jsx'));
+
+function Skeleton({ className }) {
+  return <div className={`bg-white/60 dark:bg-white/5 rounded-3xl animate-pulse ${className}`} />;
+}
 
 export default function Landing() {
   return (
     <div className="flex flex-col relative w-full overflow-hidden">
-      
-      {/* 1. Hero Section */}
       <Hero />
 
-      {/* 2. Floating Rescue Feed Ticker */}
-      <RescueFeed />
+      {/* 9. REALTIME ACTIVITY TICKER */}
+      <Suspense fallback={<Skeleton className="h-[140px] my-6 mx-6" />}>
+        <RealtimeActivityTicker />
+      </Suspense>
 
-      {/* 3. Bento Features Grid */}
+      {/* 1. LIVE RESCUE FEED */}
+      <div id="live-rescue-feed">
+        <Suspense fallback={<Skeleton className="h-[280px] my-6 mx-6" />}>
+          <LiveRescueFeedSection />
+        </Suspense>
+      </div>
+
+      {/* 2. INTERACTIVE MAP PREVIEW */}
+      <div id="interactive-map-preview">
+        <Suspense fallback={<Skeleton className="h-[520px] my-6 mx-6" />}>
+          <InteractiveMapPreview />
+        </Suspense>
+      </div>
+
+      {/* Existing premium Bento features */}
       <BentoFeatures />
 
-      {/* 4. Rescue Story Timeline Engine */}
-      <TimelineEngine />
+      {/* 3. AI DIAGNOSTICS PREVIEW */}
 
-      {/* 5. Impact Wall */}
+      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
+        <AiDiagnosticsPreview />
+      </Suspense>
+
+      {/* 4. VOLUNTEER GAMIFICATION */}
+      <Suspense fallback={<Skeleton className="h-[360px] my-6 mx-6" />}>
+        <VolunteerGamificationPreview />
+      </Suspense>
+
+      {/* 5. DONATION & IMPACT */}
+      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
+        <DonationImpactPreview />
+      </Suspense>
+
+      {/* 6. RESCUE TIMELINE VISUALIZATION */}
+      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
+        <RescueTimelineVisualization />
+      </Suspense>
+
+      {/* 7. SHELTER & ADOPTION PREVIEW */}
+      <Suspense fallback={<Skeleton className="h-[520px] my-6 mx-6" />}>
+        <ShelterAdoptionPreview />
+      </Suspense>
+
+      {/* 8. ANALYTICS / IMPACT WALL */}
+      <Suspense fallback={<Skeleton className="h-[220px] my-6 mx-6" />}>
+        <AnalyticsImpactWall />
+      </Suspense>
+
+      {/* 10. FEATURED STORIES */}
+      <Suspense fallback={<Skeleton className="h-[320px] my-6 mx-6" />}>
+        <FeaturedStoriesSection />
+      </Suspense>
+
+      {/* Keep existing narrative engine & impact wall */}
+      <TimelineEngine />
       <ImpactWall />
 
-      {/* 6. Curved Gradient CTA Panel */}
+      {/* 11. MOBILE QUICK ACTION DOCK */}
+      <Suspense fallback={null}>
+        <MobileQuickActionDock />
+      </Suspense>
+
+      {/* 12. CTA FOOTER */}
+      <Suspense fallback={<div className="h-24" />}>
+        <PremiumFooter />
+      </Suspense>
+
+      {/* Keep existing end CTA */}
       <section className="py-20 px-6 max-w-7xl mx-auto w-full relative z-10">
         <div className="bg-gradient-to-tr from-lavender/80 to-peach/85 rounded-[3rem] p-8 md:p-16 text-center shadow-2xl relative overflow-hidden text-white flex flex-col items-center">
-          {/* Animated decorative orbs */}
-          <div className="absolute top-1/2 left-10 w-44 h-44 bg-white/20 rounded-full blur-2xl animate-float"></div>
-          <div className="absolute top-10 right-20 w-32 h-32 bg-white/25 rounded-full blur-2xl animate-float-reverse"></div>
-          
+          <div className="absolute top-1/2 left-10 w-44 h-44 bg-white/20 rounded-full blur-2xl animate-float" />
+          <div className="absolute top-10 right-20 w-32 h-32 bg-white/25 rounded-full blur-2xl animate-float-reverse" />
+
           <div className="relative z-10 max-w-2xl">
             <span className="text-xs font-bold uppercase tracking-widest bg-white/20 px-4 py-1.5 rounded-full inline-block mb-4">
               Join Our Network
@@ -42,7 +114,7 @@ export default function Landing() {
               Help Keep Urban Stray Animals Safe
             </h2>
             <p className="text-white/80 text-sm md:text-base leading-relaxed mb-8 max-w-md mx-auto">
-              Become a citizen reporter, claim cases as a volunteer, or sponsor clinics in need of funding.
+              Become a citizen reporter, claim cases as a volunteer, or support medical campaigns.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -55,18 +127,13 @@ export default function Landing() {
                 to="/map"
                 className="bg-dark/15 border border-white/40 hover:bg-dark/25 px-8 py-3.5 rounded-full font-bold font-outfit flex items-center justify-center gap-1.5 transition-all text-white"
               >
-                View Live Map <ArrowRight className="w-4.5 h-4.5" />
+                View Live Map
               </Link>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Footer Branding details */}
-      <footer className="py-8 text-center text-xs text-gray-400 border-t border-lavender/5 dark:border-white/5">
-        <p>© 2026 PawSphere Ecosystem. Funded Pet Welfare Startup Simulator. Made with ❤️ for stray welfare.</p>
-      </footer>
-
     </div>
-  )
+  );
 }
+

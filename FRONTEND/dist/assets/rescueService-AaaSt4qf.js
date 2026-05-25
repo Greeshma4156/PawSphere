@@ -1,0 +1,1 @@
+import{a as e}from"./axios-CjNxVIb1.js";const t="/api/v1/rescues",o=async s=>(await e.post(t,s)).data,r=async(s={})=>(await e.get(t,{params:s})).data,c=async s=>(await e.get(`${t}/${s}`)).data,p=async s=>(await e.put(`${t}/${s}/upvote`)).data;export{r as a,c as g,o as r,p as u};

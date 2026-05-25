@@ -1,7 +1,8 @@
 import RescueCase from '../models/RescueCase.js';
 import RescueTimeline from '../models/RescueTimeline.js';
 import AuditLog from '../models/AuditLog.js';
-import User from '../models/User.js';
+import Message from '../models/Message.js';
+
 import { getDBStatus } from '../config/db.js';
 import * as inMemoryDb from '../utils/inMemoryDb.js';
 
@@ -24,25 +25,45 @@ const calculatePriority = (severity, upvotesCount = 1) => {
 // @access  Private (Citizen or Admin)
 export const reportRescue = async (req, res, next) => {
   try {
-    const { title, animalType, injurySeverity, description, coordinates, address, photos } = req.body;
+    const {
+      title,
+      animalType,
+      injurySeverity,
+      severity,
+      description,
+      coordinates,
+      address,
+      photos,
+    } = req.body;
+
     const useInMemory = !getDBStatus();
-    const priorityScore = calculatePriority(injurySeverity || 'medium', 1);
+
+    const resolvedSeverity = injurySeverity || severity || 'medium';
+    const priorityScore = calculatePriority(resolvedSeverity, 1);
+
+    const normalizedPhotos = Array.isArray(photos) && photos.length > 0 ? photos : undefined;
+    const fallbackPhoto =
+      'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80';
+
+    const timelineDescription = `Stray animal emergency reported by citizen ${req.user.name}.`;
 
     if (useInMemory) {
       const caseId = 'case_id_' + Date.now();
+
       const newCase = {
         _id: caseId,
         title,
         animalType,
-        injurySeverity: injurySeverity || 'medium',
+        injurySeverity: resolvedSeverity,
         description,
         location: { type: 'Point', coordinates },
         address: address || '',
-        photos: photos && photos.length > 0 ? photos : ['https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80'],
+        photos: normalizedPhotos ? normalizedPhotos : [fallbackPhoto],
         reporter: req.user._id,
         assignedVolunteer: null,
         priorityScore,
         upvotes: [req.user._id],
+        // Align with Phase 2 timeline wording.
         status: 'pending',
         isDeleted: false,
         createdAt: new Date(),
@@ -50,16 +71,16 @@ export const reportRescue = async (req, res, next) => {
 
       inMemoryDb.rescueCases.push(newCase);
 
-      // Create timeline record
       const timelineId = 't_' + Date.now();
-      inMemoryDb.rescueTimelines.push({
+      const reportedTimeline = {
         _id: timelineId,
         rescueCase: caseId,
         eventType: 'reported',
-        description: `Stray animal emergency reported by citizen ${req.user.name}.`,
+        description: timelineDescription,
         author: req.user.name,
         createdAt: new Date(),
-      });
+      };
+      inMemoryDb.rescueTimelines.push(reportedTimeline);
 
       inMemoryDb.auditLogs.push({
         _id: 'audit_' + Date.now(),
@@ -69,28 +90,40 @@ export const reportRescue = async (req, res, next) => {
         createdAt: new Date(),
       });
 
-      return res.status(201).json({ success: true, data: newCase });
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('rescue:created', {
+          rescue: {
+            ...newCase,
+            location: newCase.location,
+          },
+          timeline: reportedTimeline,
+        });
+      }
+
+
+      return res.status(201).json({ success: true, data: { rescue: newCase, timeline: reportedTimeline } });
     }
 
-    // MONGODB Mode
     const rescueCase = await RescueCase.create({
+
       title,
       animalType,
-      injurySeverity: injurySeverity || 'medium',
+      injurySeverity: resolvedSeverity,
       description,
       location: { type: 'Point', coordinates },
       address: address || '',
-      photos: photos && photos.length > 0 ? photos : ['https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80'],
+      photos: normalizedPhotos ? normalizedPhotos : [fallbackPhoto],
       reporter: req.user._id,
       priorityScore,
       upvotes: [req.user._id],
+      // Keep DB default pending for now (timeline shows “reported”).
     });
 
-    // Create Timeline
-    await RescueTimeline.create({
+    const reportedTimeline = await RescueTimeline.create({
       rescueCase: rescueCase._id,
       eventType: 'reported',
-      description: `Stray animal emergency reported by citizen ${req.user.name}.`,
+      description: timelineDescription,
       author: req.user.name,
     });
 
@@ -102,22 +135,31 @@ export const reportRescue = async (req, res, next) => {
       targetId: rescueCase._id.toString(),
     });
 
-    // Trigger Socket.io broadcast to all connected clients (Phase 4 Event Emission)
     const io = req.app.get('io');
     if (io) {
-      io.emit('rescue_created', {
-        caseId: rescueCase._id,
-        title: rescueCase.title,
-        severity: rescueCase.injurySeverity,
-        location: rescueCase.location.coordinates
+      io.emit('rescue:created', {
+        rescue: {
+          ...rescueCase.toObject(),
+          location: rescueCase.location,
+        },
+        timeline: reportedTimeline,
       });
     }
 
-    res.status(201).json({ success: true, data: rescueCase });
+    res.status(201).json({
+      success: true,
+      data: {
+        rescue: rescueCase,
+        timeline: reportedTimeline,
+      },
+    });
   } catch (err) {
     next(err);
   }
 };
+
+
+
 
 // @desc    Get all rescue cases (sorted by priority score)
 // @route   GET /api/v1/rescues
@@ -170,7 +212,8 @@ export const getRescueDetails = async (req, res, next) => {
         return res.status(404).json({ success: false, error: 'Rescue case not found' });
       }
       const timeline = inMemoryDb.rescueTimelines.filter(t => t.rescueCase === id);
-      return res.status(200).json({ success: true, data: rescue, timeline });
+      const messages = inMemoryDb.messages ? inMemoryDb.messages.filter(m => m.rescueId === id) : [];
+      return res.status(200).json({ success: true, data: rescue, timeline, messages });
     }
 
     // MONGODB Mode
@@ -183,8 +226,9 @@ export const getRescueDetails = async (req, res, next) => {
     }
 
     const timeline = await RescueTimeline.find({ rescueCase: id }).sort({ createdAt: 1 });
+    const messages = await Message.find({ rescueId: id }).sort({ createdAt: 1 });
 
-    res.status(200).json({ success: true, data: rescue, timeline });
+    res.status(200).json({ success: true, data: rescue, timeline, messages });
   } catch (err) {
     next(err);
   }
