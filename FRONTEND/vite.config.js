@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    proxy: {
+    // Proxy only when running locally (development). In production Vercel will use the env variables.
+    proxy: process.env.NODE_ENV !== 'production' ? {
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
@@ -15,6 +16,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         ws: true,
       },
-    },
+    } : {},
   },
 })
