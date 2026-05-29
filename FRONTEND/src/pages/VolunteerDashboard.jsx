@@ -35,14 +35,22 @@ export default function VolunteerDashboard() {
     queryFn: () => getNearbyQueue().then((r) => r.data || r),
   })
 
-  const nearbyQueue = queueResp || []
+  const nearbyQueue = Array.isArray(queueResp?.data)
+    ? queueResp.data
+    : Array.isArray(queueResp)
+      ? queueResp
+      : []
 
   const { data: missionsResp, isLoading: missionsLoading } = useQuery({
     queryKey: ['assigned_missions'],
     queryFn: () => getAssignedMissions().then((r) => r.data || r),
   })
 
-  const assignedMissions = missionsResp || []
+  const assignedMissions = Array.isArray(missionsResp?.data)
+    ? missionsResp.data
+    : Array.isArray(missionsResp)
+      ? missionsResp
+      : []
 
   const { data: statsResp, isLoading: statsLoading } = useQuery({
     queryKey: ['volunteer_stats'],

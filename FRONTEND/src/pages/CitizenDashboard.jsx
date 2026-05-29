@@ -128,7 +128,11 @@ export default function CitizenDashboard() {
   });
 
   const myRescues = useMemo(() => {
-    const all = rescuesResp?.data || [];
+    const all = Array.isArray(rescuesResp?.data)
+      ? rescuesResp.data
+      : Array.isArray(rescuesResp)
+        ? rescuesResp
+        : [];
     if (!user?._id) return all;
     return all.filter((r) => String(r.reporter?._id || r.reporter) === String(user._id) || String(r.reporter) === String(user._id));
   }, [rescuesResp, user]);
@@ -158,7 +162,11 @@ export default function CitizenDashboard() {
     queryKey: ['campaigns'],
     queryFn: () => getCampaigns().then((r) => r.data || r),
   });
-  const campaigns = campaignsResp?.data || campaignsResp || [];
+  const campaigns = Array.isArray(campaignsResp?.data)
+    ? campaignsResp.data
+    : Array.isArray(campaignsResp)
+      ? campaignsResp
+      : [];
 
   const quickActions = [
     {

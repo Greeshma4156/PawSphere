@@ -36,28 +36,44 @@ export default function ShelterDashboard() {
     queryFn: () => getIncomingRescueQueue().then((r) => r.data || r),
   })
 
-  const incomingQueue = queueResp || []
+  const incomingQueue = Array.isArray(queueResp?.data)
+    ? queueResp.data
+    : Array.isArray(queueResp)
+      ? queueResp
+      : []
 
   const { data: adoptionsResp, isLoading: adoptionsLoading } = useQuery({
     queryKey: ['shelter_adoptions'],
     queryFn: () => getAdoptions().then((r) => r.data || r),
   })
 
-  const adoptions = adoptionsResp || []
+  const adoptions = Array.isArray(adoptionsResp?.data)
+    ? adoptionsResp.data
+    : Array.isArray(adoptionsResp)
+      ? adoptionsResp
+      : []
 
   const { data: passportsResp, isLoading: passportsLoading } = useQuery({
     queryKey: ['shelter_medical_passports'],
     queryFn: () => getMedicalPassports().then((r) => r.data || r),
   })
 
-  const passports = passportsResp || []
+  const passports = Array.isArray(passportsResp?.data)
+    ? passportsResp.data
+    : Array.isArray(passportsResp)
+      ? passportsResp
+      : []
 
   const { data: fostersResp } = useQuery({
     queryKey: ['shelter_foster_requests'],
     queryFn: () => getFosterRequests().then((r) => r.data || r),
   })
 
-  const fosters = fostersResp || []
+  const fosters = Array.isArray(fostersResp?.data)
+    ? fostersResp.data
+    : Array.isArray(fostersResp)
+      ? fostersResp
+      : []
 
   useSocketEvents({
     enabled: true,
