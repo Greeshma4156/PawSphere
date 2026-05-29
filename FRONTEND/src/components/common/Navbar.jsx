@@ -5,10 +5,24 @@ import { Sun, Moon, Menu, X, LogOut, MapPin, Heart, LayoutDashboard, User } from
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Navbar() {
-  const { user, theme, toggleTheme, setUser } = useUIStore()
+  const { user, theme, toggleTheme, setUser, notifications, markNotificationsRead, clearNotifications } = useUIStore()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true)
+      } else {
+        setScrolled(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleLogout = () => {
     setUser(null, null);
@@ -23,15 +37,22 @@ export default function Navbar() {
     return `/dashboard/${user.role}`;
   };
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-cream/70 dark:bg-dark/70 backdrop-blur-md border-b border-lavender/10 dark:border-white/5 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <nav className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-cream/80 dark:bg-dark/85 backdrop-blur-lg border-b border-lavender/25 shadow-lg py-2' 
+        : 'bg-cream/45 dark:bg-dark/45 backdrop-blur-md border-b border-lavender/10 py-4'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <motion.div 
-            className="w-10 h-10 rounded-2xl bg-lavender flex items-center justify-center text-xl shadow-md shadow-lavender/30"
-            whileHover={{ rotate: 12, scale: 1.05 }}
+            className="w-10 h-10 rounded-2xl bg-lavender flex items-center justify-center text-xl shadow-md shadow-lavender/35"
+            whileHover={{ rotate: [0, 15, -15, 0], scale: 1.1 }}
+            transition={{ duration: 0.5 }}
           >
             🐾
           </motion.div>
@@ -43,43 +64,129 @@ export default function Navbar() {
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
           <Link
+            to="/"
+            className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
+              isLinkActive('/') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
+            }`}
+          >
+            Home
+            {isLinkActive('/') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
+          </Link>
+          <Link
             to="/map"
-            className={`font-medium text-sm flex items-center gap-1.5 transition-colors ${
-              isLinkActive('/map') ? 'text-lavender font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
+            className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
+              isLinkActive('/map') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
             }`}
           >
             <MapPin className="w-4 h-4" /> Rescue Map
+            {isLinkActive('/map') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
           </Link>
           <Link
             to="/donations"
-            className={`font-medium text-sm flex items-center gap-1.5 transition-colors ${
-              isLinkActive('/donations') ? 'text-lavender font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
+            className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
+              isLinkActive('/donations') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
             }`}
           >
             <Heart className="w-4 h-4" /> Medical Funding
+            {isLinkActive('/donations') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
+          </Link>
+          <Link
+            to="/adoptions"
+            className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
+              isLinkActive('/adoptions') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
+            }`}
+          >
+            Adoption Portal
+            {isLinkActive('/adoptions') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
           </Link>
           {user && (
             <Link
               to={getDashboardPath()}
-              className={`font-medium text-sm flex items-center gap-1.5 transition-colors ${
-                location.pathname.startsWith('/dashboard') ? 'text-lavender font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
+              className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
+                location.pathname.startsWith('/dashboard') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" /> Dashboard
+              <LayoutDashboard className="w-4 h-4" /> Console
+              {location.pathname.startsWith('/dashboard') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
             </Link>
           )}
         </div>
 
         {/* Action Controls */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4 relative">
+          
           {/* Light/Dark Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-2xl hover:bg-lavender/10 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
+            className="p-2.5 rounded-2xl hover:bg-lavender/10 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer hover:scale-105 active:scale-95"
             aria-label="Toggle theme mode"
           >
-            {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-peach" />}
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-peach animate-spin-slow" />}
           </button>
+
+          {/* Notification Bell with Badge */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowNotifications(!showNotifications)
+                if (!showNotifications) markNotificationsRead();
+              }}
+              className="p-2.5 rounded-2xl hover:bg-lavender/10 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer relative hover:scale-105 active:scale-95"
+              aria-label="Notifications"
+            >
+              <span>🔔</span>
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 bg-red-500 text-white font-extrabold text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-cream dark:border-dark animate-bounce">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Notifications Panel */}
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 15 }}
+                  className="absolute right-0 mt-3 w-80 bg-white/95 dark:bg-dark/95 backdrop-blur-md border border-lavender/25 dark:border-white/10 rounded-3xl p-4 shadow-2xl z-50 text-left"
+                >
+                  <div className="flex items-center justify-between border-b border-lavender/15 pb-2.5 mb-2.5">
+                    <h4 className="font-extrabold font-outfit text-sm text-dark dark:text-cream">Alert Feed</h4>
+                    {notifications.length > 0 && (
+                      <button 
+                        onClick={clearNotifications}
+                        className="text-[10px] font-extrabold text-red-400 hover:text-red-500 uppercase tracking-wider"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="max-h-60 overflow-y-auto space-y-2.5">
+                    {notifications.length === 0 ? (
+                      <div className="text-center py-6 text-xs text-gray-400">
+                        <span className="text-xl block mb-1">🕊️</span>
+                        All quiet in the sphere.
+                      </div>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className="text-xs p-2 rounded-xl bg-beige/35 dark:bg-white/5 border border-lavender/5">
+                          <div className="font-extrabold text-dark dark:text-cream flex items-center justify-between">
+                            <span>{n.title}</span>
+                            <span className="text-[9px] font-normal text-gray-400">
+                              {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-normal">{n.message}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {user ? (
             <div className="flex items-center gap-3 bg-lavender/10 dark:bg-white/5 p-1.5 pr-4 rounded-full border border-lavender/20">
@@ -157,6 +264,13 @@ export default function Navbar() {
               >
                 <Heart className="w-5 h-5 text-lavender" /> Medical Funding
               </Link>
+              <Link
+                to="/adoptions"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-lg font-semibold flex items-center gap-2 py-2"
+              >
+                🐾 Adoption Portal
+              </Link>
               {user && (
                 <Link
                   to={getDashboardPath()}
@@ -223,6 +337,10 @@ export default function Navbar() {
         <Link to="/donations" className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">
           <span className="text-xl">💝</span>
           <span className="text-[9px] font-semibold mt-0.5">Donate</span>
+        </Link>
+        <Link to="/adoptions" className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">
+          <span className="text-xl">🐾</span>
+          <span className="text-[9px] font-semibold mt-0.5">Adopt</span>
         </Link>
         {user ? (
           <Link to={getDashboardPath()} className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">

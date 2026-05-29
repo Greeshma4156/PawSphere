@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getCampaigns, donateToCampaign } from '../services/donationService';
 import { useUIStore } from '../store/uiStore';
 import { Heart, Landmark, Users, ArrowUpRight, DollarSign, Calendar, ShieldCheck, Sparkles, AlertCircle } from 'lucide-react';
@@ -86,16 +87,27 @@ export default function DonationPortal() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 relative min-h-[85vh]">
       {/* Title */}
-      <div className="text-center max-w-xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-1 px-3 py-1 bg-peach/10 border border-peach/25 rounded-full text-xs font-bold text-peach uppercase tracking-wider mb-2.5">
+      <div className="text-center max-w-xl mx-auto mb-12 space-y-4">
+        <div className="inline-flex items-center gap-1 px-3 py-1 bg-peach/10 border border-peach/25 rounded-full text-xs font-bold text-peach uppercase tracking-wider mb-1">
           <Sparkles className="w-3.5 h-3.5 text-peach" /> Sponsoring Medical Treatment
         </div>
         <h2 className="text-3xl md:text-5xl font-extrabold font-outfit text-dark dark:text-cream leading-tight">
           Medical Funding Campaigns
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Transparent ledger funding for stray surgeries, emergency medicines, and vaccinations.
         </p>
+
+        {user && (user.role === 'shelter' || user.role === 'admin') && (
+          <div className="pt-2">
+            <Link
+              to="/create-campaign"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-lavender text-white rounded-full text-xs font-bold shadow-lg hover:bg-lavender-light hover:scale-105 transition-all"
+            >
+              <Heart className="w-4 h-4 fill-current text-white" /> Create Medical Campaign
+            </Link>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -109,24 +121,38 @@ export default function DonationPortal() {
             return (
               <motion.div
                 key={campaign._id}
-                className="bg-white dark:bg-dark border border-lavender/10 dark:border-white/5 rounded-3xl p-5 shadow-md flex flex-col justify-between hover:shadow-xl transition-all"
-                whileHover={{ y: -4 }}
+                className="bg-white dark:bg-dark border border-lavender/15 dark:border-white/5 rounded-[2rem] p-5 shadow-lg flex flex-col justify-between hover:shadow-xl transition-all"
+                whileHover={{ y: -6 }}
               >
                 <div>
-                  <h3 className="font-extrabold font-outfit text-lg text-dark dark:text-cream leading-tight mb-2">
-                    {campaign.title}
-                  </h3>
-                  <p className="text-xs text-gray-400 leading-relaxed mb-4 line-clamp-3">
+                  {/* Visual Image Frame */}
+                  <div className="w-full aspect-[16/10] rounded-2xl overflow-hidden relative border border-lavender/10 mb-4 bg-beige/30">
+                    <img
+                      src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80"
+                      alt={campaign.title}
+                      className="w-full h-full object-cover select-none"
+                    />
+                    <div className="absolute top-3 left-3 bg-white/90 dark:bg-dark/95 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-extrabold uppercase text-lavender border border-lavender/25 shadow-sm">
+                      Orthopedic Case
+                    </div>
+                  </div>
+
+                  <Link to={`/donations/${campaign._id}`}>
+                    <h3 className="font-extrabold font-outfit text-lg text-dark dark:text-cream leading-tight mb-2 hover:text-lavender transition-colors">
+                      {campaign.title}
+                    </h3>
+                  </Link>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4 line-clamp-2">
                     {campaign.description}
                   </p>
 
                   {/* Progress Indicator */}
-                  <div className="space-y-1.5 mb-5">
+                  <div className="space-y-1.5 mb-4">
                     <div className="flex justify-between text-[11px] font-bold">
                       <span className="text-lavender font-outfit">{percent}% Funded</span>
                       <span className="text-gray-400 font-normal">${campaign.raisedAmount} of ${campaign.targetAmount}</span>
                     </div>
-                    <div className="w-full h-2.5 bg-beige/50 dark:bg-white/5 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-beige/50 dark:bg-white/5 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-lavender to-peach rounded-full transition-all duration-1000"
                         style={{ width: `${percent}%` }}
@@ -135,17 +161,20 @@ export default function DonationPortal() {
                   </div>
 
                   {/* Expense Items Breakdown */}
-                  <div className="bg-beige/25 dark:bg-white/5 p-3 rounded-2xl border border-lavender/5 mb-5">
-                    <h4 className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                      <Landmark className="w-3.5 h-3.5 text-lavender" /> Budget Breakdown
+                  <div className="bg-beige/20 dark:bg-white/5 p-3 rounded-xl border border-lavender/5 mb-4">
+                    <h4 className="text-[9px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <Landmark className="w-3 h-3 text-lavender" /> Budget Breakdown
                     </h4>
-                    <div className="flex flex-col gap-1.5">
-                      {campaign.expenses?.map((item, idx) => (
-                        <div key={idx} className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                    <div className="flex flex-col gap-1">
+                      {campaign.expenses?.slice(0, 2).map((item, idx) => (
+                        <div key={idx} className="flex justify-between text-[11px] text-gray-600 dark:text-gray-300">
                           <span className="truncate max-w-[80%]">• {item.title}</span>
                           <span className="font-bold font-outfit text-dark dark:text-cream">${item.amount}</span>
                         </div>
                       ))}
+                      {campaign.expenses?.length > 2 && (
+                        <span className="text-[10px] text-gray-400 font-medium">+{campaign.expenses.length - 2} more items</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -177,21 +206,29 @@ export default function DonationPortal() {
                     </div>
                   )}
 
-                  <button
-                    onClick={() => handleOpenCheckout(campaign)}
-                    disabled={campaign.isCompleted}
-                    className={`w-full py-3 rounded-full font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md ${
-                      campaign.isCompleted
-                        ? 'bg-mint text-emerald-800 shadow-none cursor-default font-extrabold'
-                        : 'bg-lavender text-white hover:bg-lavender-light hover:scale-[1.01]'
-                    }`}
-                  >
-                    {campaign.isCompleted ? (
-                      <>Fully Funded! 🎉</>
-                    ) : (
-                      <>Sponsor Treatment <ArrowUpRight className="w-4 h-4" /></>
-                    )}
-                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      to={`/donations/${campaign._id}`}
+                      className="py-2.5 rounded-xl border border-lavender/25 text-lavender hover:bg-lavender/5 font-bold text-[11px] text-center transition-all"
+                    >
+                      Details & Story
+                    </Link>
+                    <button
+                      onClick={() => handleOpenCheckout(campaign)}
+                      disabled={campaign.isCompleted}
+                      className={`py-2.5 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1 transition-all shadow-sm ${
+                        campaign.isCompleted
+                          ? 'bg-mint text-emerald-800 shadow-none cursor-default font-extrabold col-span-1'
+                          : 'bg-lavender text-white hover:bg-lavender-light'
+                      }`}
+                    >
+                      {campaign.isCompleted ? (
+                        <>Funded! 🎉</>
+                      ) : (
+                        <>Sponsor <ArrowUpRight className="w-3.5 h-3.5" /></>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             );
