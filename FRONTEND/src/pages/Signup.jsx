@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUIStore } from '../store/uiStore'
 import { useForm } from 'react-hook-form'
-import { ShieldAlert, User, Shield, Warehouse, Check, ArrowRight, ArrowLeft } from 'lucide-react'
+import { ShieldAlert, User, Shield, Check, ArrowRight, ArrowLeft } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '../lib/axios'
 
@@ -123,73 +123,52 @@ export default function Signup() {
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Select your alignment to load tailored consoles & widgets</p>
                 </div>
 
-                {/* Roles Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-                  {/* Citizen */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('citizen')}
-                    className={`p-5 rounded-3xl border-2 text-left flex flex-col justify-between cursor-pointer transition-all relative overflow-hidden h-44 ${
-                      selectedRole === 'citizen'
-                        ? 'border-lavender bg-lavender/5 shadow-lg shadow-lavender/5 scale-[1.02]'
-                        : 'border-lavender/10 dark:border-white/5 hover:border-lavender/35 hover:bg-lavender/5'
-                    }`}
-                  >
-                    <User className="w-7 h-7 text-lavender mb-4" />
-                    <div>
-                      <h4 className="font-bold text-sm text-dark dark:text-cream leading-snug">Citizen</h4>
-                      <p className="text-[10px] text-gray-400 mt-1 leading-normal">Report injured strays, upvote active cases, sponsor local medical care.</p>
-                    </div>
-                    {selectedRole === 'citizen' && (
-                      <div className="absolute top-3 right-3 bg-lavender text-white p-0.5 rounded-full">
-                        <Check className="w-3.5 h-3.5" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    {
+                      role: 'citizen',
+                      icon: <User className="w-6 h-6" />,
+                      title: 'Citizen Reporter',
+                      desc: 'Report injured strays, track rescue timelines, donate to campaigns, and apply to adopt rescued animals.',
+                      badge: 'Most Common',
+                      badgeColor: 'bg-mint/20 text-emerald-700 dark:text-emerald-400',
+                    },
+                    {
+                      role: 'volunteer',
+                      icon: <Shield className="w-6 h-6" />,
+                      title: 'Volunteer / Shelter',
+                      desc: 'Accept rescue missions, update status, manage shelter intake queues, medical passports, and foster applications.',
+                      badge: 'Verification Required',
+                      badgeColor: 'bg-peach/20 text-orange-700 dark:text-orange-400',
+                    },
+                  ].map(({ role, icon, title, desc, badge, badgeColor }) => (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => setSelectedRole(role)}
+                      className={`text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
+                        selectedRole === role
+                          ? 'border-lavender bg-lavender/5 shadow-lg shadow-lavender/10'
+                          : 'border-lavender/15 dark:border-white/5 hover:border-lavender/30'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2.5 rounded-xl ${selectedRole === role ? 'bg-lavender text-white' : 'bg-beige/40 dark:bg-white/5 text-lavender'}`}>
+                          {icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-extrabold text-dark dark:text-cream">{title}</span>
+                            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{desc}</p>
+                        </div>
+                        {selectedRole === role && (
+                          <Check className="w-4 h-4 text-lavender shrink-0 mt-0.5" />
+                        )}
                       </div>
-                    )}
-                  </button>
-
-                  {/* Volunteer */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('volunteer')}
-                    className={`p-5 rounded-3xl border-2 text-left flex flex-col justify-between cursor-pointer transition-all relative overflow-hidden h-44 ${
-                      selectedRole === 'volunteer'
-                        ? 'border-lavender bg-lavender/5 shadow-lg shadow-lavender/5 scale-[1.02]'
-                        : 'border-lavender/10 dark:border-white/5 hover:border-lavender/35 hover:bg-lavender/5'
-                    }`}
-                  >
-                    <Shield className="w-7 h-7 text-lavender mb-4" />
-                    <div>
-                      <h4 className="font-bold text-sm text-dark dark:text-cream leading-snug">Volunteer</h4>
-                      <p className="text-[10px] text-gray-400 mt-1 leading-normal">Claim rescue cases, navigate to coordinates, update recovery timeline logs.</p>
-                    </div>
-                    {selectedRole === 'volunteer' && (
-                      <div className="absolute top-3 right-3 bg-lavender text-white p-0.5 rounded-full">
-                        <Check className="w-3.5 h-3.5" />
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Shelter */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('shelter')}
-                    className={`p-5 rounded-3xl border-2 text-left flex flex-col justify-between cursor-pointer transition-all relative overflow-hidden h-44 ${
-                      selectedRole === 'shelter'
-                        ? 'border-lavender bg-lavender/5 shadow-lg shadow-lavender/5 scale-[1.02]'
-                        : 'border-lavender/10 dark:border-white/5 hover:border-lavender/35 hover:bg-lavender/5'
-                    }`}
-                  >
-                    <Warehouse className="w-7 h-7 text-lavender mb-4" />
-                    <div>
-                      <h4 className="font-bold text-sm text-dark dark:text-cream leading-snug">Shelter/NGO</h4>
-                      <p className="text-[10px] text-gray-400 mt-1 leading-normal">Manage stray intake, host medical campaigns, issue digital passports.</p>
-                    </div>
-                    {selectedRole === 'shelter' && (
-                      <div className="absolute top-3 right-3 bg-lavender text-white p-0.5 rounded-full">
-                        <Check className="w-3.5 h-3.5" />
-                      </div>
-                    )}
-                  </button>
+                    </button>
+                  ))}
                 </div>
 
                 <button
@@ -335,29 +314,6 @@ export default function Signup() {
                     </motion.div>
                   )}
 
-                  {/* Shelter Fields */}
-                  {selectedRole === 'shelter' && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      className="pt-3 border-t border-dashed border-lavender/20"
-                    >
-                      <div>
-                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">NGO License / Registration Number</label>
-                        <input
-                          type="text"
-                          placeholder="NGO-REG-MH-2026-981"
-                          className={`w-full bg-beige/10 dark:bg-dark/50 border p-3 rounded-xl text-xs transition-all focus:outline-none focus:ring-2 focus:ring-lavender/35 dark:text-cream ${
-                            errors.registrationNumber ? 'border-red-500' : 'border-lavender/20 dark:border-white/5'
-                          }`}
-                          {...register('registrationNumber', { required: 'NGO Registration number is required' })}
-                        />
-                        {errors.registrationNumber && (
-                          <span className="text-[9px] text-red-500 font-semibold mt-1 ml-1 block">{errors.registrationNumber.message}</span>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
 
                   <div className="flex gap-4 pt-4">
                     <button

@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['citizen', 'volunteer', 'shelter', 'admin'],
+    enum: ['citizen', 'volunteer', 'admin'],
     default: 'citizen',
   },
   avatar: {
@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: function() {
-      return this.role !== 'volunteer'; // Citizens/Shelters auto-verified, volunteers need admin review
+      return this.role !== 'volunteer'; // Citizens auto-verified, volunteers need admin review
     },
   },
   experienceLevel: {

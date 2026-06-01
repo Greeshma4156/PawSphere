@@ -7,6 +7,10 @@ import {
   getAdoptions,
   getMedicalPassports,
   getFosterRequests,
+  addMedicalLog,
+  addVaccination,
+  approveFoster,
+  rejectFoster,
 } from '../../controllers/shelterController.js';
 
 const router = express.Router();
@@ -15,17 +19,32 @@ router.get('/', (req, res) => {
   res.json({ success: true, message: 'Shelter API base' });
 });
 
-router.get('/me/capacity', protect, authorize('shelter', 'admin'), getCapacity);
+// Shelter console routes — accessible by volunteer or admin (shelter ops role)
+router.get('/me/capacity',  protect, authorize('volunteer', 'admin'), getCapacity);
+router.get('/me/queue',     protect, authorize('volunteer', 'admin'), getIncomingQueue);
+router.post('/:rescueId/intake', protect, authorize('volunteer', 'admin'), intakeRescue);
+router.get('/me/adoptions', protect, authorize('volunteer', 'admin'), getAdoptions);
+router.get('/me/passports', protect, authorize('volunteer', 'admin'), getMedicalPassports);
+router.get('/me/fosters',   protect, authorize('volunteer', 'admin'), getFosterRequests);
 
-router.get('/me/queue', protect, authorize('shelter', 'admin'), getIncomingQueue);
+// Medical passport update routes
+router.post('/me/passports/:petId/log',         protect, authorize('volunteer', 'admin'), addMedicalLog);
+router.post('/me/passports/:petId/vaccination', protect, authorize('volunteer', 'admin'), addVaccination);
 
-router.post('/:rescueId/intake', protect, authorize('shelter', 'admin'), intakeRescue);
+// Foster management
+router.patch('/me/fosters/:fosterId/approve', protect, authorize('volunteer', 'admin'), approveFoster);
+router.patch('/me/fosters/:fosterId/reject',  protect, authorize('volunteer', 'admin'), rejectFoster);
 
-router.get('/me/adoptions', protect, authorize('shelter', 'admin'), getAdoptions);
-
-router.get('/me/passports', protect, authorize('shelter', 'admin'), getMedicalPassports);
-
-router.get('/me/fosters', protect, authorize('shelter', 'admin'), getFosterRequests);
+// Citizens can apply to foster a pet (public-ish — any logged-in user)
+router.post('/adoptions/:petId/foster-apply', protect, async (req, res, next) => {
+  try {
+    const { Foster } = await import('../../models/Foster.js');
+    const { petId } = req.params;
+    const { message } = req.body;
+    const foster = await Foster.create({ pet: petId, applicant: req.user._id, message: message || '' });
+    res.status(201).json({ success: true, data: foster });
+  } catch (err) { next(err); }
+});
 
 export default router;
 

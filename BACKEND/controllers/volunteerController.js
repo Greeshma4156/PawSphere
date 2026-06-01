@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import RescueCase from '../models/RescueCase.js';
+import AdoptionPet from '../models/AdoptionPet.js';
 import RescueTimeline from '../models/RescueTimeline.js';
 import AuditLog from '../models/AuditLog.js';
 import { getDBStatus } from '../config/db.js';
@@ -111,16 +112,11 @@ export const updateRescueStatus = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Rescue case not found' });
     }
 
-    // Enforce Authorization: only assigned volunteer can update volunteer stages, shelter can update shelter/care stages
+    // Volunteers can advance any status; admins have full access
     if (req.user.role !== 'admin') {
-      if (['on_the_way', 'rescued'].includes(status)) {
+      if (['on_the_way', 'rescued', 'treatment', 'sheltered', 'safe', 'adopted'].includes(status)) {
         if (!rescue.assignedVolunteer || rescue.assignedVolunteer.toString() !== req.user._id.toString()) {
-          return res.status(403).json({ success: false, error: 'Only the assigned volunteer can update volunteer stages' });
-        }
-      }
-      if (['treatment', 'sheltered', 'safe', 'adopted'].includes(status)) {
-        if (req.user.role !== 'shelter') {
-          return res.status(403).json({ success: false, error: 'Only shelters can update shelter/care stages' });
+          return res.status(403).json({ success: false, error: 'Only the assigned volunteer can update mission status' });
         }
       }
     }
@@ -225,4 +221,90 @@ export const getVolunteerStats = async (req, res, next) => {
     next(err);
   }
 };
+// @route   POST /api/v1/volunteers/:rescueId/intake
+// @desc    Complete intake: mark rescued→sheltered and create AdoptionPet record
+// @access  Private (volunteer/admin)
+export const intakeRescue = async (req, res, next) => {
+  try {
+    const { rescueId } = req.params;
+    const io = req.app.get('io');
+    const useInMemory = !getDBStatus();
 
+    let rescue;
+    if (useInMemory) {
+      rescue = inMemoryDb.rescueCases.find((c) => c._id === rescueId && !c.isDeleted);
+    } else {
+      rescue = await RescueCase.findById(rescueId);
+    }
+
+    if (!rescue || rescue.isDeleted) {
+      return res.status(404).json({ success: false, error: 'Rescue case not found' });
+    }
+
+    if (rescue.status !== 'rescued') {
+      return res.status(400).json({
+        success: false,
+        error: `Rescue must be in 'rescued' status for intake. Current: '${rescue.status}'`,
+      });
+    }
+
+    // Advance status to sheltered
+    const { timeline } = await updateRescueStatusService(
+      rescueId,
+      'sheltered',
+      req.user,
+      io,
+      `Intake completed by volunteer ${req.user.name}.`
+    );
+
+    const passportId = 'PASS-' + rescue._id;
+
+    if (useInMemory) {
+      if (!inMemoryDb.adoptionPets.find((p) => p.medicalPassportId === passportId)) {
+        inMemoryDb.adoptionPets.push({
+          _id: 'pet_' + Date.now(),
+          name: rescue.title,
+          animalType: rescue.animalType,
+          breed: 'Mixed Breed',
+          age: 'Unknown',
+          story: rescue.description,
+          photo: rescue.photos?.[0] || '',
+          shelter: req.user._id,
+          medicalPassportId: passportId,
+          qrCodeUrl: passportId + '-QR',
+          vaccinations: [],
+          healthLog: [],
+          status: 'available',
+        });
+      }
+      return res.status(200).json({ success: true, data: { rescue, timeline } });
+    }
+
+    // Avoid duplicate passport creation
+    const existing = await AdoptionPet.findOne({ medicalPassportId: passportId });
+    if (!existing) {
+      await AdoptionPet.create({
+        name: rescue.title,
+        animalType: rescue.animalType,
+        breed: 'Mixed Breed',
+        age: 'Unknown',
+        story: rescue.description,
+        photo: rescue.photos?.[0] || '',
+        shelter: req.user._id,
+        medicalPassportId: passportId,
+        qrCodeUrl: passportId + '-QR',
+        vaccinations: [],
+        healthLog: [],
+        status: 'available',
+      });
+    }
+
+    if (io) {
+      io.emit('rescue:intake_completed', { rescueId: rescue._id, medicalPassportId: passportId });
+    }
+
+    res.status(200).json({ success: true, data: { rescue, timeline } });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -134,11 +134,11 @@ function App() {
                   <Route
                     path="/dashboard/shelter"
                     element={
-                      <ProtectedRoute allowedRoles={['shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['volunteer', 'admin']}>
                         <DashboardLayout
                           role="shelter"
                           title="Shelter Console"
-                          subtitle="Manage intake, capacity, and medical campaigns."
+                          subtitle="Intake queue, medical passports, and foster management."
                         />
                       </ProtectedRoute>
                     }
@@ -146,6 +146,7 @@ function App() {
                     <Route index element={<ShelterDashboard />} />
                     <Route path="rescue/:id" element={<RescueCasePage />} />
                   </Route>
+
 
                   <Route
                     path="/dashboard/admin"
@@ -160,7 +161,7 @@ function App() {
                   <Route
                     path="/donations"
                     element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
                         <DonationPortal />
                       </ProtectedRoute>
                     }
@@ -169,7 +170,7 @@ function App() {
                   <Route
                     path="/donations/:id"
                     element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
                         <CampaignDetails />
                       </ProtectedRoute>
                     }
@@ -178,7 +179,7 @@ function App() {
                   <Route
                     path="/create-campaign"
                     element={
-                      <ProtectedRoute allowedRoles={['shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['volunteer', 'admin']}>
                         <CreateCampaign />
                       </ProtectedRoute>
                     }
@@ -187,7 +188,7 @@ function App() {
                   <Route
                     path="/adoptions"
                     element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
                         <AdoptionPortal />
                       </ProtectedRoute>
                     }
@@ -196,7 +197,7 @@ function App() {
                   <Route
                     path="/map"
                     element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
                         <RescueMap />
                       </ProtectedRoute>
                     }
@@ -206,7 +207,7 @@ function App() {
                   <Route
                     path="/rescue/:id"
                     element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'shelter', 'admin']}>
+                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
                         <RescueCasePage />
                       </ProtectedRoute>
                     }

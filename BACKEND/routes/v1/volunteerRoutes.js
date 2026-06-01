@@ -7,6 +7,7 @@ import {
   getNearbyQueue,
   getAssignedMissions,
   getVolunteerStats,
+  intakeRescue,
 } from '../../controllers/volunteerController.js';
 
 const router = express.Router();
@@ -21,8 +22,11 @@ router.put('/availability', protect, authorize('volunteer', 'admin'), setAvailab
 // Claim rescue
 router.post('/:rescueId/claim', protect, authorize('volunteer', 'admin'), claimRescue);
 
-// Update rescue status
+// Update rescue status (volunteers now own full lifecycle incl. sheltered/treatment/safe)
 router.put('/:rescueId/status', protect, authorize('volunteer', 'admin'), updateRescueStatus);
+
+// Complete intake: mark rescued → sheltered + create adoption passport
+router.post('/:rescueId/intake', protect, authorize('volunteer', 'admin'), intakeRescue);
 
 // Nearby queue
 router.get('/me/queue', protect, authorize('volunteer', 'admin'), getNearbyQueue);

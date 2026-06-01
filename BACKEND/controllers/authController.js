@@ -1,5 +1,4 @@
 import User from '../models/User.js';
-import Shelter from '../models/Shelter.js';
 import AuditLog from '../models/AuditLog.js';
 import { getDBStatus } from '../config/db.js';
 import * as inMemoryDb from '../utils/inMemoryDb.js';
@@ -58,18 +57,6 @@ export const signup = async (req, res, next) => {
 
       inMemoryDb.users.push(newUser);
 
-      if (role === 'shelter') {
-        inMemoryDb.shelters.push({
-          _id: 'shelter_info_' + Date.now(),
-          user: userId,
-          registrationNumber: registrationNumber || 'REG-PENDING',
-          capacity: { total: 20, occupied: 0 },
-          facilities: ['medical_ward', 'rehabilitation_yard', 'quarantine_zone'],
-          emergencyHotline: phone || '',
-          createdAt: new Date(),
-        });
-      }
-
       inMemoryDb.auditLogs.push({
         _id: 'audit_' + Date.now(),
         action: 'USER_SIGNUP',
@@ -105,13 +92,6 @@ export const signup = async (req, res, next) => {
       location: coordinates ? { type: 'Point', coordinates } : undefined,
     });
 
-    if (role === 'shelter') {
-      await Shelter.create({
-        user: user._id,
-        registrationNumber: registrationNumber || 'REG-PENDING',
-        capacity: { total: 20, occupied: 0 },
-      });
-    }
 
     await AuditLog.create({
       user: user._id,
