@@ -1,8 +1,9 @@
-/node_modules/
-/FRONTEND/node_modules/
-/.env
-/.env.local
-/FRONTEND/.env
-/FRONTEND/.env.local
-/FRONTEND/dist
-/FRONTEND/node_modules/.vite/
+# Backend-specific ignores (root .gitignore covers most)
+node_modules/
+.env
+.env.local
+.env.*
+*.log
+logs/
+coverage/
+.cache/
