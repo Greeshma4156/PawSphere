@@ -5,11 +5,15 @@
       "destination": "https://pawsphere.onrender.com/api/v1/:path*"
     },
     {
+      "source": "/socket.io",
+      "destination": "https://pawsphere.onrender.com/socket.io"
+    },
+    {
       "source": "/socket.io/:path*",
       "destination": "https://pawsphere.onrender.com/socket.io/:path*"
     },
     {
-      "source": "/((?!api/|socket.io/).*)",
+      "source": "/((?!api(?:/|$)|socket\\.io(?:/|$)).*)",
       "destination": "/index.html"
     }
   ]
