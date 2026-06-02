@@ -5,7 +5,7 @@ let socketSingleton = null;
 
 export const getSocket = () => {
   if (socketSingleton) return socketSingleton;
-  const url = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  const url = import.meta.env.VITE_SOCKET_URL || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5000');
 
   try {
     socketSingleton = io(url, { transports: ['websocket'], autoConnect: true });

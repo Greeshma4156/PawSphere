@@ -1,7 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/v1/:path*",
+      "destination": "https://pawsphere.onrender.com/api/v1/:path*"
+    },
+    {
+      "source": "/socket.io/:path*",
+      "destination": "https://pawsphere.onrender.com/socket.io/:path*"
+    },
+    {
+      "source": "/((?!api/|socket.io/).*)",
       "destination": "/index.html"
     }
   ]
