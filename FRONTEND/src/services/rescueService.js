@@ -1,7 +1,7 @@
 import axiosInstance from '../lib/axios';
 
 // Base endpoint for rescue API
-const BASE_URL = '/api/v1/rescues';
+const BASE_URL = '/rescues';
 
 /**
  * Report a new stray rescue case.

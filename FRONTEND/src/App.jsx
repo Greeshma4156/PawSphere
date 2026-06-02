@@ -16,7 +16,6 @@ const Login = React.lazy(() => import('./pages/Login'))
 const Signup = React.lazy(() => import('./pages/Signup'))
 const CitizenDashboard = React.lazy(() => import('./pages/CitizenDashboard'))
 const VolunteerDashboard = React.lazy(() => import('./pages/VolunteerDashboard'))
-const ShelterDashboard = React.lazy(() => import('./pages/ShelterDashboard'))
 const DonationPortal = React.lazy(() => import('./pages/DonationPortal'))
 const CampaignDetails = React.lazy(() => import('./pages/CampaignDetails'))
 const CreateCampaign = React.lazy(() => import('./pages/CreateCampaign'))
@@ -128,22 +127,6 @@ function App() {
                     }
                   >
                     <Route index element={<VolunteerDashboard />} />
-                    <Route path="rescue/:id" element={<RescueCasePage />} />
-                  </Route>
-
-                  <Route
-                    path="/dashboard/shelter"
-                    element={
-                      <ProtectedRoute allowedRoles={['volunteer', 'admin']}>
-                        <DashboardLayout
-                          role="shelter"
-                          title="Shelter Console"
-                          subtitle="Intake queue, medical passports, and foster management."
-                        />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route index element={<ShelterDashboard />} />
                     <Route path="rescue/:id" element={<RescueCasePage />} />
                   </Route>
 

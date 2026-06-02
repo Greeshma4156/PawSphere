@@ -1,6 +1,6 @@
 import axiosInstance from '../lib/axios';
 
-const BASE_URL = '/api/v1/shelters';
+const BASE_URL = '/shelters';
 
 export const getShelterCapacity = async () => {
   const response = await axiosInstance.get(`${BASE_URL}/me/capacity`);

@@ -19,21 +19,21 @@ router.get('/', (req, res) => {
   res.json({ success: true, message: 'Shelter API base' });
 });
 
-// Shelter console routes — accessible by volunteer or admin (shelter ops role)
-router.get('/me/capacity',  protect, authorize('volunteer', 'admin'), getCapacity);
-router.get('/me/queue',     protect, authorize('volunteer', 'admin'), getIncomingQueue);
-router.post('/:rescueId/intake', protect, authorize('volunteer', 'admin'), intakeRescue);
-router.get('/me/adoptions', protect, authorize('volunteer', 'admin'), getAdoptions);
-router.get('/me/passports', protect, authorize('volunteer', 'admin'), getMedicalPassports);
-router.get('/me/fosters',   protect, authorize('volunteer', 'admin'), getFosterRequests);
+// Shelter console routes — accessible by citizen, volunteer, or admin (combined roles)
+router.get('/me/capacity',  protect, authorize('citizen', 'volunteer', 'admin'), getCapacity);
+router.get('/me/queue',     protect, authorize('citizen', 'volunteer', 'admin'), getIncomingQueue);
+router.post('/:rescueId/intake', protect, authorize('citizen', 'volunteer', 'admin'), intakeRescue);
+router.get('/me/adoptions', protect, authorize('citizen', 'volunteer', 'admin'), getAdoptions);
+router.get('/me/passports', protect, authorize('citizen', 'volunteer', 'admin'), getMedicalPassports);
+router.get('/me/fosters',   protect, authorize('citizen', 'volunteer', 'admin'), getFosterRequests);
 
 // Medical passport update routes
-router.post('/me/passports/:petId/log',         protect, authorize('volunteer', 'admin'), addMedicalLog);
-router.post('/me/passports/:petId/vaccination', protect, authorize('volunteer', 'admin'), addVaccination);
+router.post('/me/passports/:petId/log',         protect, authorize('citizen', 'volunteer', 'admin'), addMedicalLog);
+router.post('/me/passports/:petId/vaccination', protect, authorize('citizen', 'volunteer', 'admin'), addVaccination);
 
 // Foster management
-router.patch('/me/fosters/:fosterId/approve', protect, authorize('volunteer', 'admin'), approveFoster);
-router.patch('/me/fosters/:fosterId/reject',  protect, authorize('volunteer', 'admin'), rejectFoster);
+router.patch('/me/fosters/:fosterId/approve', protect, authorize('citizen', 'volunteer', 'admin'), approveFoster);
+router.patch('/me/fosters/:fosterId/reject',  protect, authorize('citizen', 'volunteer', 'admin'), rejectFoster);
 
 // Citizens can apply to foster a pet (public-ish — any logged-in user)
 router.post('/adoptions/:petId/foster-apply', protect, async (req, res, next) => {

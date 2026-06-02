@@ -1,6 +1,6 @@
 import axiosInstance from '../lib/axios';
 
-const BASE_URL = '/api/v1/volunteers';
+const BASE_URL = '/volunteers';
 
 export const setVolunteerAvailability = async ({ availability }) => {
   const response = await axiosInstance.put(`${BASE_URL}/availability`, { availability });

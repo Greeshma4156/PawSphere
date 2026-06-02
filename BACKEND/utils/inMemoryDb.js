@@ -77,7 +77,7 @@ export const seedInMemoryDB = async () => {
     name: 'Hope Animal Shelter',
     email: 'hope@pawsphere.org',
     password: hashPassword,
-    role: 'shelter',
+    role: 'citizen',
     avatar: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&w=150&h=150',
     phone: '+1 555-0188',
     isVerified: true,

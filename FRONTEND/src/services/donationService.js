@@ -1,6 +1,6 @@
 import axiosInstance from '../lib/axios';
 
-const BASE_URL = '/api/v1/donations';
+const BASE_URL = '/donations';
 
 /**
  * Fetch all fundraising campaigns

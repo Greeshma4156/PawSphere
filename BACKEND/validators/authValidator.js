@@ -18,7 +18,7 @@ export const validateSignup = (req, res, next) => {
     return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long' });
   }
 
-  if (role && !['citizen', 'volunteer', 'shelter'].includes(role)) {
+  if (role && !['citizen', 'volunteer'].includes(role)) {
     return res.status(400).json({ success: false, error: 'Invalid user role selected' });
   }
 
