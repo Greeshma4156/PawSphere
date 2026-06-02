@@ -53,7 +53,23 @@ if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
 }
 
 // Enable CORS
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://paw-sphere-two.vercel.app',
+  'https://paw-sphere.vercel.app',
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.some(o => origin.startsWith(o))) {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 
 // Mount Security Middlewares
 app.use(setupHelmet());
