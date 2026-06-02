@@ -1,0 +1,8 @@
+/node_modules/
+/FRONTEND/node_modules/
+/.env
+/.env.local
+/FRONTEND/.env
+/FRONTEND/.env.local
+/FRONTEND/dist
+/FRONTEND/node_modules/.vite/
