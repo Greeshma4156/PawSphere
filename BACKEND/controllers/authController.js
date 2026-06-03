@@ -9,7 +9,7 @@ import bcrypt from 'bcryptjs';
 // Helper to sign JWT in-memory mode
 const signToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET || 'supersecretpawkey_123', {
-    expiresIn: process.env.JWT_EXPIRE || '7d',
+    expiresIn: process.env.JWT_EXPIRE || '30d',
   });
 };
 

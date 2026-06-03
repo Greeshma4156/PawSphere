@@ -24,7 +24,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const isAuthRoute = error.config && (error.config.url.includes('/auth/login') || error.config.url.includes('/auth/signup'));
+    if (error.response && error.response.status === 401 && !isAuthRoute) {
       localStorage.removeItem('pawsphere_user');
       localStorage.removeItem('pawsphere_token');
       // Force refresh to reload the auth states
