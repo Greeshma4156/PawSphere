@@ -98,7 +98,7 @@ export default function DonationPortal() {
           Transparent ledger funding for stray surgeries, emergency medicines, and vaccinations.
         </p>
 
-        {user && (user.role === 'citizen' || user.role === 'admin') && (
+        {user && (user.role === 'volunteer' || user.role === 'admin') && (
           <div className="pt-2">
             <Link
               to="/create-campaign"

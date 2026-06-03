@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export const useUIStore = create((set) => ({
   user: JSON.parse(localStorage.getItem('pawsphere_user') || 'null'),
-  token: localStorage.getItem('pawsphere_token') || 'null',
+  token: localStorage.getItem('pawsphere_token') || null,
   theme: localStorage.getItem('pawsphere_theme') || 'light',
   isOnline: navigator.onLine,
   notifications: [],

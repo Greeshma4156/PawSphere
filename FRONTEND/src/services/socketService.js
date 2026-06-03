@@ -5,10 +5,18 @@ let socketSingleton = null;
 
 export const getSocket = () => {
   if (socketSingleton) return socketSingleton;
-  const url = import.meta.env.VITE_SOCKET_URL || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5000');
+
+  // In production, connect directly to the Render backend (Vercel can't proxy WS upgrades).
+  // In development, the Vite dev-server proxy handles /socket.io forwarding to localhost:5000.
+  const url = import.meta.env.VITE_SOCKET_URL
+    || (import.meta.env.PROD ? 'https://pawsphere.onrender.com' : 'http://localhost:5000');
 
   try {
-    socketSingleton = io(url, { transports: ['websocket'], autoConnect: true });
+    socketSingleton = io(url, {
+      // Use polling first (works through Vercel rewrites), then upgrade to websocket if possible
+      transports: ['polling', 'websocket'],
+      autoConnect: true,
+    });
   } catch (e) {
     console.error('Socket initialization failed:', e);
     socketSingleton = null;

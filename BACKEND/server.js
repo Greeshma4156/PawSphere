@@ -101,8 +101,9 @@ app.use(errorHandler);
 // Setup Socket.io Server
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true,
   }
 });
 handleSocketConnections(io);
