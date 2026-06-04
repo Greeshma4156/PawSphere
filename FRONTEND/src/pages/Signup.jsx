@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useUIStore } from '../store/uiStore'
 import { useForm } from 'react-hook-form'
 import { ShieldAlert, User, Shield, Check, ArrowRight, ArrowLeft } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import api from '../lib/axios'
+import api, { resetAuthInterceptor } from '../lib/axios'
 
 export default function Signup() {
   const { setUser } = useUIStore()
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [step, setStep] = useState(1) // 1: Role Selection, 2: Form Fields
   const [selectedRole, setSelectedRole] = useState('citizen')
@@ -35,6 +37,8 @@ export default function Signup() {
       const response = await api.post('/auth/signup', payload);
       const { success, token, user, error } = response.data;
       if (success) {
+        queryClient.clear();
+        resetAuthInterceptor();
         setUser(user, token);
         navigate(`/dashboard/${user.role}`);
       } else {

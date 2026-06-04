@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useUIStore } from '../store/uiStore'
 import { useForm } from 'react-hook-form'
 import { Lock, Mail, ShieldAlert, Sparkles, ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import api from '../lib/axios'
+import api, { resetAuthInterceptor } from '../lib/axios'
 
 export default function Login() {
   const { setUser } = useUIStore()
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [serverError, setServerError] = useState(null)
@@ -31,6 +33,9 @@ export default function Login() {
       const response = await api.post('/auth/login', data);
       const { success, token, user, error } = response.data;
       if (success) {
+        // Clear stale query cache from any previous session to prevent 401 loops
+        queryClient.clear();
+        resetAuthInterceptor();
         setUser(user, token);
         navigate(`/dashboard/${user.role}`);
       } else {

@@ -8,8 +8,7 @@ const ShelterSchema = new mongoose.Schema({
   },
   registrationNumber: {
     type: String,
-    required: [true, 'Please add NGO registration details'],
-    unique: true,
+    default: '',
   },
   capacity: {
     total: { type: Number, required: true, default: 20 },

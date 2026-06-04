@@ -4,19 +4,11 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/landing/Hero';
 import BentoFeatures from '../components/landing/BentoFeatures';
 import TimelineEngine from '../components/landing/TimelineEngine';
-import ImpactWall from '../components/landing/ImpactWall';
 
 const LiveRescueFeedSection = lazy(() => import('../components/landing/LiveRescueFeedSection.jsx'));
 const InteractiveMapPreview = lazy(() => import('../components/landing/InteractiveMapPreview.jsx'));
-const AiDiagnosticsPreview = lazy(() => import('../components/landing/AiDiagnosticsPreview.jsx'));
-const VolunteerGamificationPreview = lazy(() => import('../components/landing/VolunteerGamificationPreview.jsx'));
 const DonationImpactPreview = lazy(() => import('../components/landing/DonationImpactPreview.jsx'));
-const RescueTimelineVisualization = lazy(() => import('../components/landing/RescueTimelineVisualization.jsx'));
 const ShelterAdoptionPreview = lazy(() => import('../components/landing/ShelterAdoptionPreview.jsx'));
-const AnalyticsImpactWall = lazy(() => import('../components/landing/AnalyticsImpactWall.jsx'));
-const RealtimeActivityTicker = lazy(() => import('../components/landing/RealtimeActivityTicker.jsx'));
-const FeaturedStoriesSection = lazy(() => import('../components/landing/FeaturedStoriesSection.jsx'));
-const MobileQuickActionDock = lazy(() => import('../components/landing/MobileQuickActionDock.jsx'));
 const PremiumFooter = lazy(() => import('../components/landing/PremiumFooter.jsx'));
 
 function Skeleton({ className }) {
@@ -27,11 +19,6 @@ export default function Landing() {
   return (
     <div className="flex flex-col relative w-full overflow-hidden">
       <Hero />
-
-      {/* 9. REALTIME ACTIVITY TICKER */}
-      <Suspense fallback={<Skeleton className="h-[140px] my-6 mx-6" />}>
-        <RealtimeActivityTicker />
-      </Suspense>
 
       {/* 1. LIVE RESCUE FEED */}
       <div id="live-rescue-feed">
@@ -47,60 +34,28 @@ export default function Landing() {
         </Suspense>
       </div>
 
-      {/* Existing premium Bento features */}
+      {/* 3. PREMIUM BENTO FEATURES */}
       <BentoFeatures />
 
-      {/* 3. AI DIAGNOSTICS PREVIEW */}
-
-      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
-        <AiDiagnosticsPreview />
-      </Suspense>
-
-      {/* 4. VOLUNTEER GAMIFICATION */}
-      <Suspense fallback={<Skeleton className="h-[360px] my-6 mx-6" />}>
-        <VolunteerGamificationPreview />
-      </Suspense>
-
-      {/* 5. DONATION & IMPACT */}
+      {/* 4. DONATION & IMPACT */}
       <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
         <DonationImpactPreview />
       </Suspense>
 
-      {/* 6. RESCUE TIMELINE VISUALIZATION */}
-      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
-        <RescueTimelineVisualization />
-      </Suspense>
-
-      {/* 7. SHELTER & ADOPTION PREVIEW */}
+      {/* 5. SHELTER & ADOPTION PREVIEW */}
       <Suspense fallback={<Skeleton className="h-[520px] my-6 mx-6" />}>
         <ShelterAdoptionPreview />
       </Suspense>
 
-      {/* 8. ANALYTICS / IMPACT WALL */}
-      <Suspense fallback={<Skeleton className="h-[220px] my-6 mx-6" />}>
-        <AnalyticsImpactWall />
-      </Suspense>
-
-      {/* 10. FEATURED STORIES */}
-      <Suspense fallback={<Skeleton className="h-[320px] my-6 mx-6" />}>
-        <FeaturedStoriesSection />
-      </Suspense>
-
-      {/* Keep existing narrative engine & impact wall */}
+      {/* 6. NARRATIVE ENGINE */}
       <TimelineEngine />
-      <ImpactWall />
 
-      {/* 11. MOBILE QUICK ACTION DOCK */}
-      <Suspense fallback={null}>
-        <MobileQuickActionDock />
-      </Suspense>
-
-      {/* 12. CTA FOOTER */}
+      {/* 7. CTA FOOTER */}
       <Suspense fallback={<div className="h-24" />}>
         <PremiumFooter />
       </Suspense>
 
-      {/* Keep existing end CTA */}
+      {/* END CTA */}
       <section className="py-20 px-6 max-w-7xl mx-auto w-full relative z-10">
         <div className="bg-gradient-to-tr from-lavender/80 to-peach/85 rounded-[3rem] p-8 md:p-16 text-center shadow-2xl relative overflow-hidden text-white flex flex-col items-center">
           <div className="absolute top-1/2 left-10 w-44 h-44 bg-white/20 rounded-full blur-2xl animate-float" />
