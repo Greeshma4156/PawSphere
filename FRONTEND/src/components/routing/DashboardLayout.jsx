@@ -1,11 +1,10 @@
 import React from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useUIStore } from '../../store/uiStore'
 
 export default function DashboardLayout({ role, title, subtitle, rightSlot }) {
   const { user } = useUIStore()
-  const location = useLocation()
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-6">
@@ -31,9 +30,6 @@ export default function DashboardLayout({ role, title, subtitle, rightSlot }) {
               {subtitle && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
               )}
-              <p className="text-[10px] text-gray-400 mt-2">
-                Route: <span className="font-semibold">{location.pathname}</span>
-              </p>
             </div>
             {rightSlot ? <div className="min-w-[220px]">{rightSlot}</div> : null}
           </div>

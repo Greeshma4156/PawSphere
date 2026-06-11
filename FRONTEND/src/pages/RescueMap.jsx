@@ -222,7 +222,7 @@ export default function RescueMap() {
                 <option value="all">All</option>
                 <option value="pending">Pending</option>
                 <option value="assigned">Assigned</option>
-                <option value="rescued">Rescued</option>
+                <option value="on_the_way">On the Way</option>
               </select>
             </div>
           </div>

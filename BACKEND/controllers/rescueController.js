@@ -161,6 +161,9 @@ export const reportRescue = async (req, res, next) => {
 
 
 
+// Statuses that indicate the animal has been rescued and should not appear on the map
+const RESOLVED_STATUSES = ['rescued', 'treatment', 'sheltered', 'safe', 'adopted'];
+
 // @desc    Get all rescue cases (sorted by priority score)
 // @route   GET /api/v1/rescues
 // @access  Public
@@ -173,6 +176,9 @@ export const getRescues = async (req, res, next) => {
       let list = [...inMemoryDb.rescueCases].filter(c => !c.isDeleted);
       if (status) {
         list = list.filter(c => c.status === status);
+      } else {
+        // By default, exclude rescued/completed cases from the listing
+        list = list.filter(c => !RESOLVED_STATUSES.includes(c.status));
       }
       if (animalType) {
         list = list.filter(c => c.animalType === animalType);
@@ -184,7 +190,12 @@ export const getRescues = async (req, res, next) => {
 
     // MONGODB Mode
     let query = { isDeleted: false };
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    } else {
+      // By default, exclude rescued/completed cases from the listing
+      query.status = { $nin: RESOLVED_STATUSES };
+    }
     if (animalType) query.animalType = animalType;
 
     const rescues = await RescueCase.find(query)
