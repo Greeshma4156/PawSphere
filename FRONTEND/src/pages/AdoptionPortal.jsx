@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Search, Filter, ShieldCheck, QrCode, FileText, CheckCircle, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Heart, Search, Filter, ShieldCheck, QrCode, FileText, CheckCircle, Sparkles, ArrowLeft, ArrowRight, Plus } from 'lucide-react';
 import api from '../lib/axios';
 import { useUIStore } from '../store/uiStore';
 
@@ -32,6 +32,18 @@ export default function AdoptionPortal() {
     hasOtherPets: 'no',
     experience: 'beginner',
     agreement: false
+  });
+
+  // Add Pet Modal State
+  const [addOpen, setAddOpen] = useState(false);
+  const [addingPet, setAddingPet] = useState(false);
+  const [newPet, setNewPet] = useState({
+    name: '',
+    animalType: 'dog',
+    breed: '',
+    age: '',
+    story: '',
+    photo: ''
   });
 
   useEffect(() => {
@@ -96,6 +108,22 @@ export default function AdoptionPortal() {
     }
   };
 
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    setAddingPet(true);
+    try {
+      await api.post('/adoptions', newPet);
+      setAddOpen(false);
+      setNewPet({ name: '', animalType: 'dog', breed: '', age: '', story: '', photo: '' });
+      fetchPets();
+    } catch (err) {
+      console.error('Failed to list pet:', err);
+      alert('Failed to list pet. Please check the inputs.');
+    } finally {
+      setAddingPet(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 relative min-h-[90vh]">
       {/* Dynamic ambient blurs */}
@@ -113,6 +141,17 @@ export default function AdoptionPortal() {
         <p className="text-sm md:text-base text-gray-500 dark:text-gray-400">
           Search verified rescued strays ready for foster care. Track recovery and vaccine schedules directly via blockchain-verifiable digital health passports.
         </p>
+
+        {user && (
+          <div className="pt-2">
+            <button
+              onClick={() => setAddOpen(true)}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-lavender text-white rounded-full text-xs font-bold shadow-lg hover:bg-lavender-light hover:scale-105 transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4 fill-current text-white" /> List a Pet for Adoption
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Search & Filtering Systems */}
@@ -496,6 +535,125 @@ export default function AdoptionPortal() {
 
                 </form>
               )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal 3: Add Pet for Adoption */}
+      <AnimatePresence>
+        {addOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/45 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-dark border border-lavender/25 dark:border-white/10 rounded-[2.5rem] p-6 max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl relative"
+            >
+              <button
+                onClick={() => setAddOpen(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-beige/40 dark:bg-white/5 flex items-center justify-center hover:bg-red-500/10 hover:text-red-500 transition-all font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+
+              <div className="text-center mb-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-lavender bg-lavender/10 px-3.5 py-1 rounded-full">
+                  List New Pet
+                </span>
+                <h3 className="font-extrabold font-outfit text-xl mt-3 text-dark dark:text-cream leading-tight">
+                  Add Pet for Adoption
+                </h3>
+              </div>
+
+              <form onSubmit={handleAddSubmit} className="space-y-4 text-left">
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Pet Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={newPet.name}
+                    onChange={(e) => setNewPet({ ...newPet, name: e.target.value })}
+                    placeholder="e.g. Bella"
+                    className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Species</label>
+                    <select
+                      value={newPet.animalType}
+                      onChange={(e) => setNewPet({ ...newPet, animalType: e.target.value })}
+                      className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                    >
+                      <option value="dog">Dog</option>
+                      <option value="cat">Cat</option>
+                      <option value="bird">Bird</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Breed</label>
+                    <input
+                      type="text"
+                      required
+                      value={newPet.breed}
+                      onChange={(e) => setNewPet({ ...newPet, breed: e.target.value })}
+                      placeholder="e.g. Indie Mix"
+                      className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Age</label>
+                  <select
+                    value={newPet.age}
+                    onChange={(e) => setNewPet({ ...newPet, age: e.target.value })}
+                    className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                  >
+                    <option value="">Select Age</option>
+                    <option value="Puppy / Kitten">Puppy / Kitten (&lt; 1 Yr)</option>
+                    <option value="Young Adult">Young Adult (1-2 Yrs)</option>
+                    <option value="Adult">Adult (3-6 Yrs)</option>
+                    <option value="Senior">Senior (&gt; 7 Yrs)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Rescue Story</label>
+                  <textarea
+                    required
+                    rows="3"
+                    value={newPet.story}
+                    onChange={(e) => setNewPet({ ...newPet, story: e.target.value })}
+                    placeholder="Tell the story of how this pet was rescued and their personality..."
+                    className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-0.5">Photo URL (Optional)</label>
+                  <input
+                    type="url"
+                    value={newPet.photo}
+                    onChange={(e) => setNewPet({ ...newPet, photo: e.target.value })}
+                    placeholder="https://..."
+                    className="w-full bg-beige/10 dark:bg-dark/50 border border-lavender/25 p-3 rounded-xl text-xs dark:text-cream focus:outline-none"
+                  />
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={addingPet}
+                    className="w-full bg-lavender text-white font-bold py-3.5 rounded-xl text-xs hover:bg-lavender-light hover:shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    {addingPet ? 'Listing Pet...' : 'List Pet for Adoption'}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}

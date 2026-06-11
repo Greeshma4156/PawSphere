@@ -104,4 +104,42 @@ router.post('/:id/apply', protect, async (req, res, next) => {
   }
 });
 
+// @route   POST /api/v1/adoptions
+// @desc    Add a pet for adoption
+// @access  Private
+router.post('/', protect, async (req, res, next) => {
+  try {
+    const { name, animalType, breed, age, story, photo } = req.body;
+    const useInMemory = !getDBStatus();
+
+    const medicalPassportId = `PASS-CITIZEN-${Date.now()}`;
+
+    const newPetData = {
+      name,
+      animalType,
+      breed: breed || 'Mixed Breed',
+      age,
+      story,
+      photo: photo || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80',
+      shelter: req.user._id,
+      medicalPassportId,
+      status: 'available',
+      vaccinations: [],
+      healthLog: []
+    };
+
+    let pet;
+    if (useInMemory) {
+      pet = { _id: 'pet_' + Date.now(), ...newPetData, createdAt: new Date() };
+      inMemoryDb.adoptionPets.push(pet);
+    } else {
+      pet = await AdoptionPet.create(newPetData);
+    }
+
+    res.status(201).json({ success: true, data: pet });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

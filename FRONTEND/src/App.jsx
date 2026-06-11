@@ -54,7 +54,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 function App() {
   const { theme, setOnlineStatus } = useUIStore()
 
-  // Manage Theme & Online Connection Status
+  // Manage Theme, Online Connection Status, and Session Validation
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
@@ -67,6 +67,16 @@ function App() {
 
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
+
+    // Validate session on load if token exists
+    const token = useUIStore.getState().token;
+    if (token) {
+      import('./lib/axios').then(({ default: api }) => {
+        api.get('/auth/me').catch(() => {
+          useUIStore.getState().setUser(null, null);
+        });
+      });
+    }
 
     return () => {
       window.removeEventListener('online', handleOnline)

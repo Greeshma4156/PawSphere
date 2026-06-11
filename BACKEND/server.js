@@ -45,7 +45,8 @@ const server = http.createServer(app);
 await connectDB();
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
@@ -54,8 +55,8 @@ if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
 
 // Enable CORS
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
+  'http://localhost',
+  'http://127.0.0.1',
   'https://paw-sphere-two.vercel.app',
   'https://paw-sphere.vercel.app',
 ];
@@ -66,7 +67,7 @@ app.use(cors({
     if (allowedOrigins.some(o => origin.startsWith(o))) {
       return callback(null, true);
     }
-    callback(new Error('Not allowed by CORS'));
+    callback(new Error('Not allowed by CORS: ' + origin));
   },
   credentials: true,
 }));
@@ -101,7 +102,13 @@ app.use(errorHandler);
 // Setup Socket.io Server
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.some(o => origin.startsWith(o))) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS: ' + origin));
+    },
     methods: ['GET', 'POST'],
     credentials: true,
   }
