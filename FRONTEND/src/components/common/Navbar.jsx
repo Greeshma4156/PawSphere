@@ -82,15 +82,6 @@ export default function Navbar() {
             {isLinkActive('/map') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
           </Link>
           <Link
-            to="/donations"
-            className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
-              isLinkActive('/donations') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
-            }`}
-          >
-            <Heart className="w-4 h-4" /> Medical Funding
-            {isLinkActive('/donations') && <motion.div layoutId="activeNav" className="absolute bottom-0 left-0 right-0 h-0.5 bg-lavender rounded-full" />}
-          </Link>
-          <Link
             to="/adoptions"
             className={`font-semibold text-sm flex items-center gap-1.5 transition-colors relative py-1 ${
               isLinkActive('/adoptions') ? 'text-lavender font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-lavender'
@@ -258,13 +249,6 @@ export default function Navbar() {
                 <MapPin className="w-5 h-5 text-lavender" /> Rescue Map
               </Link>
               <Link
-                to="/donations"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-lg font-semibold flex items-center gap-2 py-2"
-              >
-                <Heart className="w-5 h-5 text-lavender" /> Medical Funding
-              </Link>
-              <Link
                 to="/adoptions"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-lg font-semibold flex items-center gap-2 py-2"
@@ -333,10 +317,6 @@ export default function Navbar() {
         <Link to="/map" className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">
           <span className="text-xl">🗺️</span>
           <span className="text-[9px] font-semibold mt-0.5">Map</span>
-        </Link>
-        <Link to="/donations" className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">
-          <span className="text-xl">💝</span>
-          <span className="text-[9px] font-semibold mt-0.5">Donate</span>
         </Link>
         <Link to="/adoptions" className="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 hover:text-lavender">
           <span className="text-xl">🐾</span>

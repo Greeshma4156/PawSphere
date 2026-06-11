@@ -43,6 +43,21 @@ function severityBadge(sev) {
   return { cls: 'bg-mint text-emerald-800', label: 'Low' };
 }
 
+const DISPLAY_STATUS = {
+  pending: 'pending',
+  assigned: 'assigned',
+  on_the_way: 'on the way',
+  rescued: 'rescued',
+  treatment: 'rescued',
+  sheltered: 'rescued',
+  safe: 'rescued',
+  adopted: 'rescued',
+};
+
+function getDisplayStatus(status) {
+  return DISPLAY_STATUS[status] || String(status || '').replace(/_/g, ' ');
+}
+
 function formatElapsed(ts) {
   const delta = Math.max(0, Date.now() - ts);
   const mins = Math.floor(delta / 60000);
@@ -180,7 +195,7 @@ export default function LiveRescueFeedSection() {
                   <div className="mt-3 flex items-center justify-between gap-3 text-[11px] text-gray-500 dark:text-gray-400">
                     <div className="inline-flex items-center gap-2">
                       <Heart className="w-3.5 h-3.5 text-peach" />
-                      <span>{item.status.replace(/_/g, ' ')}</span>
+                      <span>{getDisplayStatus(item.status)}</span>
                     </div>
                     <div className="font-extrabold text-lavender">{formatElapsed(item.createdAt)}</div>
                   </div>

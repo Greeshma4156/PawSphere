@@ -52,6 +52,21 @@ function severityToInsight(severity) {
   }
 }
 
+const DISPLAY_STATUS = {
+  pending: 'pending',
+  assigned: 'assigned',
+  on_the_way: 'on the way',
+  rescued: 'rescued',
+  treatment: 'rescued',
+  sheltered: 'rescued',
+  safe: 'rescued',
+  adopted: 'rescued',
+};
+
+const getDisplayStatus = (status) => {
+  return DISPLAY_STATUS[status] || String(status || '').replace(/_/g, ' ');
+};
+
 export default function RescueCasePage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -102,7 +117,7 @@ export default function RescueCasePage() {
           <h3 className="font-extrabold text-dark dark:text-cream">Assigned Volunteer</h3>
         </div>
         <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-          {rescue?.status || '—'}
+          {getDisplayStatus(rescue?.status) || '—'}
         </span>
       </div>
 
@@ -274,7 +289,7 @@ export default function RescueCasePage() {
                   <h3 className="font-extrabold text-dark dark:text-cream">Map Preview</h3>
                 </div>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                  {rescue?.status || '—'}
+                  {getDisplayStatus(rescue?.status) || '—'}
                 </span>
               </div>
 

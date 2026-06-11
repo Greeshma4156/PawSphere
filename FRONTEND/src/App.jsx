@@ -16,9 +16,6 @@ const Login = React.lazy(() => import('./pages/Login'))
 const Signup = React.lazy(() => import('./pages/Signup'))
 const CitizenDashboard = React.lazy(() => import('./pages/CitizenDashboard'))
 const VolunteerDashboard = React.lazy(() => import('./pages/VolunteerDashboard'))
-const DonationPortal = React.lazy(() => import('./pages/DonationPortal'))
-const CampaignDetails = React.lazy(() => import('./pages/CampaignDetails'))
-const CreateCampaign = React.lazy(() => import('./pages/CreateCampaign'))
 const AdoptionPortal = React.lazy(() => import('./pages/AdoptionPortal'))
 const AdminPanel = React.lazy(() => import('./pages/AdminPanel'))
 const RescueMap = React.lazy(() => import('./pages/RescueMap'))
@@ -151,32 +148,6 @@ function App() {
                   />
 
                   {/* Shared routes */}
-                  <Route
-                    path="/donations"
-                    element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
-                        <DonationPortal />
-                      </ProtectedRoute>
-                    }
-                  />
-
-                  <Route
-                    path="/donations/:id"
-                    element={
-                      <ProtectedRoute allowedRoles={['citizen', 'volunteer', 'admin']}>
-                        <CampaignDetails />
-                      </ProtectedRoute>
-                    }
-                  />
-
-                  <Route
-                    path="/create-campaign"
-                    element={
-                      <ProtectedRoute allowedRoles={['volunteer', 'admin']}>
-                        <CreateCampaign />
-                      </ProtectedRoute>
-                    }
-                  />
 
                   <Route
                     path="/adoptions"

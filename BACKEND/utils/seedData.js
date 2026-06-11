@@ -1,7 +1,6 @@
 import User from '../models/User.js';
 import RescueCase from '../models/RescueCase.js';
 import RescueTimeline from '../models/RescueTimeline.js';
-import Donation from '../models/Donation.js';
 import Shelter from '../models/Shelter.js';
 import AdoptionPet from '../models/AdoptionPet.js';
 import AuditLog from '../models/AuditLog.js';
@@ -194,41 +193,7 @@ export const seedMongoDB = async () => {
       }
     ]);
 
-    // 5. Donations campaigns
-    await Donation.create([
-      {
-        title: 'Surgery fund for street dog Bruno',
-        description: 'Bruno was rescued with a compound femur fracture. He requires immediate orthopedic surgery, screws, and post-op care.',
-        targetAmount: 500,
-        raisedAmount: 320,
-        rescueCase: case2._id,
-        expenses: [
-          { title: 'Orthopedic Bone Plates & Screws', amount: 250, billUrl: '' },
-          { title: 'Veterinary Surgeon consultation fees', amount: 150, billUrl: '' },
-          { title: 'Post-op Antibiotics and painkillers (14 Days)', amount: 100, billUrl: '' },
-        ],
-        backers: [
-          { user: citizen._id, name: 'Sarah Connor', amount: 120, timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000) },
-          { user: null, name: 'Anonymous PawLover', amount: 200, timestamp: new Date(Date.now() - 45 * 60 * 1000) },
-        ],
-      },
-      {
-        title: 'Vaccine drive for stray colony',
-        description: 'Funding 7-in-1 vaccines and anti-rabies doses for a community stray pack of 15 dogs.',
-        targetAmount: 200,
-        raisedAmount: 200,
-        rescueCase: null,
-        expenses: [
-          { title: '15 Anti-Rabies Vaccine Doses', amount: 80, billUrl: '' },
-          { title: '15 DHPPiL Multi-vaccine vials', amount: 120, billUrl: '' },
-        ],
-        backers: [
-          { user: citizen._id, name: 'Sarah Connor', amount: 100, timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000) },
-          { user: volunteer._id, name: 'John Doe', amount: 100, timestamp: new Date(Date.now() - 12 * 60 * 1000) },
-        ],
-        isCompleted: true,
-      }
-    ]);
+    // 5. Donations removed
 
     // 6. Adoption Pets
     await AdoptionPet.create([

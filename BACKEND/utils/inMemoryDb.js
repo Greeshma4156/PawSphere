@@ -226,46 +226,7 @@ export const seedInMemoryDB = async () => {
     }
   );
 
-  // 5. Donation Campaigns
-  donations.push(
-    {
-      _id: 'donation_1',
-      title: 'Surgery fund for street dog Bruno',
-      description: 'Bruno was rescued with a compound femur fracture. He requires immediate orthopedic surgery, screws, and post-op care.',
-      targetAmount: 500,
-      raisedAmount: 320,
-      rescueCase: 'case_id_2',
-      expenses: [
-        { title: 'Orthopedic Bone Plates & Screws', amount: 250, billUrl: 'https://pawsphere.org/bills/invoice_plates.jpg' },
-        { title: 'Veterinary Surgeon consultation fees', amount: 150, billUrl: 'https://pawsphere.org/bills/invoice_consult.jpg' },
-        { title: 'Post-op Antibiotics and painkillers (14 Days)', amount: 100, billUrl: 'https://pawsphere.org/bills/invoice_meds.jpg' },
-      ],
-      backers: [
-        { user: 'citizen_id_1', name: 'Sarah Connor', amount: 120, timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000) },
-        { user: null, name: 'Anonymous PawLover', amount: 200, timestamp: new Date(Date.now() - 45 * 60 * 1000) },
-      ],
-      isCompleted: false,
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    },
-    {
-      _id: 'donation_2',
-      title: 'Vaccine drive for stray colony',
-      description: 'Funding 7-in-1 vaccines and anti-rabies doses for a community stray pack of 15 dogs.',
-      targetAmount: 200,
-      raisedAmount: 200, // Fully funded!
-      rescueCase: null,
-      expenses: [
-        { title: '15 Anti-Rabies Vaccine Doses', amount: 80, billUrl: 'https://pawsphere.org/bills/invoice_rabies.jpg' },
-        { title: '15 DHPPiL Multi-vaccine vials', amount: 120, billUrl: 'https://pawsphere.org/bills/invoice_dhppil.jpg' },
-      ],
-      backers: [
-        { user: 'citizen_id_1', name: 'Sarah Connor', amount: 100, timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000) },
-        { user: 'volunteer_id_1', name: 'John Doe', amount: 100, timestamp: new Date(Date.now() - 12 * 60 * 1000) },
-      ],
-      isCompleted: true,
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    }
-  );
+  // 5. Donation Campaigns removed
 
   // 6. Adoption Rescued Pets
   adoptionPets.push(

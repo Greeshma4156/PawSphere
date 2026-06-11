@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Search, Filter, ShieldCheck, QrCode, FileText, CheckCircle, Sparkles, ArrowLeft, ArrowRight, Plus } from 'lucide-react';
+import { Heart, Search, Filter, ShieldCheck, QrCode, FileText, CheckCircle, Sparkles, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
 import api from '../lib/axios';
 import { useUIStore } from '../store/uiStore';
 
@@ -45,6 +45,8 @@ export default function AdoptionPortal() {
     story: '',
     photo: ''
   });
+
+  const [deletingPetId, setDeletingPetId] = useState(null);
 
   useEffect(() => {
     fetchPets();
@@ -94,7 +96,7 @@ export default function AdoptionPortal() {
     }
     setApplying(true);
     try {
-      await api.post(`/adoptions/${selectedPet._id}/apply`);
+      await api.post(`/adoptions/${selectedPet._id}/apply`, { formData });
       setApplySuccess(true);
       setTimeout(() => {
         setApplyOpen(false);
@@ -121,6 +123,24 @@ export default function AdoptionPortal() {
       alert('Failed to list pet. Please check the inputs.');
     } finally {
       setAddingPet(false);
+    }
+  };
+
+  const handleDeletePet = async (petId) => {
+    if (deletingPetId !== petId) {
+      setDeletingPetId(petId);
+      return;
+    }
+    try {
+      console.log('Sending DELETE request for petId:', petId);
+      const res = await api.delete(`/adoptions/${petId}`);
+      console.log('DELETE response:', res.data);
+      setDeletingPetId(null);
+      fetchPets();
+    } catch (err) {
+      console.error('Failed to delete pet listing:', err);
+      alert(err.response?.data?.error || 'Failed to remove listing.');
+      setDeletingPetId(null);
     }
   };
 
@@ -265,7 +285,7 @@ export default function AdoptionPortal() {
               <div className="space-y-2 mt-4 pt-4 border-t border-lavender/10 dark:border-white/5">
                 <button
                   onClick={() => handleOpenPassport(pet)}
-                  className="w-full border border-lavender/25 dark:border-white/10 hover:border-lavender/70 bg-transparent py-2.5 rounded-xl text-xs font-bold text-dark dark:text-cream flex items-center justify-center gap-1.5 hover:bg-lavender/5 transition-all"
+                  className="w-full border border-lavender/25 dark:border-white/10 hover:border-lavender/70 bg-transparent py-2.5 rounded-xl text-xs font-bold text-dark dark:text-cream flex items-center justify-center gap-1.5 hover:bg-lavender/5 transition-all cursor-pointer"
                 >
                   <FileText className="w-4 h-4 text-lavender" /> Digital Health Passport
                 </button>
@@ -274,12 +294,25 @@ export default function AdoptionPortal() {
                   disabled={pet.status !== 'available'}
                   className={`w-full py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all ${
                     pet.status === 'available'
-                      ? 'bg-lavender text-white hover:bg-lavender-light hover:scale-[1.01]'
+                      ? 'bg-lavender text-white hover:bg-lavender-light hover:scale-[1.01] cursor-pointer'
                       : 'bg-gray-200 dark:bg-white/5 text-gray-400 dark:text-gray-600 shadow-none cursor-not-allowed'
                   }`}
                 >
                   <Heart className="w-4 h-4 fill-current" /> Apply for Adoption
                 </button>
+                {user && String(pet.shelter?._id || pet.shelter) === String(user._id) && (
+                  <button
+                    onClick={() => handleDeletePet(pet._id)}
+                    className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                      deletingPetId === pet._id
+                        ? 'bg-red-500 border-red-500 text-white hover:bg-red-600'
+                        : 'border-red-500/25 text-red-500 hover:bg-red-500/10'
+                    }`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {deletingPetId === pet._id ? 'Confirm Removal?' : 'Remove Listing'}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}

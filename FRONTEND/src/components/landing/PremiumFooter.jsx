@@ -36,7 +36,7 @@ export default function PremiumFooter() {
                 <div className="text-xs font-extrabold uppercase tracking-widest text-gray-400">Quick Links</div>
                 <div className="mt-3 space-y-2">
                   <Link to="/map" className="block text-sm text-gray-600 dark:text-gray-200 hover:text-lavender">Live Map</Link>
-                  <Link to="/donations" className="block text-sm text-gray-600 dark:text-gray-200 hover:text-lavender">Donations</Link>
+                  <Link to="/adoptions" className="block text-sm text-gray-600 dark:text-gray-200 hover:text-lavender">Adoptions</Link>
                   <Link to="/dashboard/citizen" className="block text-sm text-gray-600 dark:text-gray-200 hover:text-lavender">Citizen Dashboard</Link>
                 </div>
               </div>

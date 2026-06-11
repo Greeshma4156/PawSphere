@@ -61,6 +61,10 @@ const AdoptionPetSchema = new mongoose.Schema({
     enum: ['rehab', 'available', 'pending_adoption', 'adopted'],
     default: 'available',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

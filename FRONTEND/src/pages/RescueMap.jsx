@@ -16,6 +16,22 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Helper to display post-rescue statuses as "rescued" for users
+const DISPLAY_STATUS = {
+  pending: 'pending',
+  assigned: 'assigned',
+  on_the_way: 'on the way',
+  rescued: 'rescued',
+  treatment: 'rescued',
+  sheltered: 'rescued',
+  safe: 'rescued',
+  adopted: 'rescued',
+};
+
+function getDisplayStatus(status) {
+  return DISPLAY_STATUS[status] || String(status || '').replace(/_/g, ' ');
+}
+
 // Helper component to refocus the map when selection changes
 function MapRefocus({ center }) {
   const map = useMap();
@@ -231,7 +247,7 @@ export default function RescueMap() {
                 }`}
               >
                 <div className="flex flex-col gap-1 max-w-[80%]">
-                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">{item.animalType} • {item.status}</span>
+                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">{item.animalType} • {getDisplayStatus(item.status)}</span>
                   <h5 className="font-bold text-xs text-dark dark:text-cream truncate leading-snug">{item.title}</h5>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">📍 {item.address || 'Address unknown'}</p>
                 </div>
@@ -304,7 +320,7 @@ export default function RescueMap() {
             <div className="flex justify-between items-start">
               <div>
                 <span className="text-[9px] font-extrabold uppercase tracking-widest bg-lavender/10 text-lavender px-2 py-0.5 rounded-md inline-block mb-1.5 capitalize">
-                  {selectedCase.status} • {selectedCase.animalType}
+                  {getDisplayStatus(selectedCase.status)} • {selectedCase.animalType}
                 </span>
                 <h3 className="font-extrabold font-outfit text-base text-dark dark:text-cream leading-tight">
                   {selectedCase.title}

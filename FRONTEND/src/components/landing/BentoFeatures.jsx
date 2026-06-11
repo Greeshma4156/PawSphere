@@ -87,10 +87,10 @@ export default function BentoFeatures() {
           </span>
         </motion.div>
 
-        {/* Card 4: Medical Sponsorship (Span 2 Cols) */}
+        {/* Card 4: Adoption Portal (Span 2 Cols) */}
         <motion.div
           as={Link}
-          to="/donations"
+          to="/adoptions"
           className="md:col-span-2 bg-gradient-to-br from-peach/30 to-orange-100/30 border border-peach/40 rounded-3xl p-6 flex flex-col justify-between overflow-hidden relative group cursor-pointer"
           whileHover={{ y: -5 }}
         >
@@ -101,15 +101,15 @@ export default function BentoFeatures() {
               <Heart className="w-5 h-5" />
             </div>
             <h3 className="text-xl font-bold font-outfit text-dark dark:text-cream">
-              Transparent Medical Campaigns
+              Adoption Portal
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 max-w-md leading-relaxed">
-              Sponsor surgeries and clinic treatments directly. Follow individual pet passports with invoice transparency and progress meter notifications.
+              Find verified rescued strays ready for foster care. Track recovery and vaccine schedules directly via blockchain-verifiable digital health passports.
             </p>
           </div>
 
           <span className="text-xs font-bold text-orange-700 flex items-center gap-1 mt-4">
-            Browse Campaigns →
+            Adopt a Pet →
           </span>
         </motion.div>
       </div>

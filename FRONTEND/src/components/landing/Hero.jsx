@@ -33,23 +33,11 @@ export default function Hero() {
           </h1>
           
           <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl font-normal leading-relaxed">
-            PawSphere is the first transparent crowdfunding & rapid-response stray rescue startup. Connect injured street animals directly with local veterinarians, claim rescues, and track medical recovery via blockchain-grade verifiable passports.
+            PawSphere is the first transparent rapid-response stray rescue startup. Connect injured street animals directly with local veterinarians, claim rescues, and track medical recovery via blockchain-grade verifiable passports.
           </p>
 
           {/* Core Action CTAs */}
           <div className="flex flex-wrap gap-4 pt-2">
-            <Link
-              to="/donations"
-              className="bg-lavender text-white px-8 py-4 rounded-full font-bold font-outfit hover:bg-lavender-light hover:text-lavender transition-all shadow-xl shadow-lavender/25 flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98]"
-            >
-              <Coins className="w-4 h-4" /> Start / Sponsor Campaign
-            </Link>
-            <Link
-              to="/donations"
-              className="bg-white dark:bg-white/5 border border-lavender/20 hover:border-lavender text-dark dark:text-cream px-8 py-4 rounded-full font-bold font-outfit hover:bg-lavender/5 transition-all flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98]"
-            >
-              Explore Campaigns
-            </Link>
             <Link
               to="/adoptions"
               className="bg-peach text-dark px-8 py-4 rounded-full font-bold font-outfit hover:bg-peach/80 transition-all flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98] shadow-lg shadow-peach/15"
@@ -60,9 +48,6 @@ export default function Hero() {
 
           {/* Trust Badges */}
           <div className="flex flex-wrap gap-6 pt-4 items-center border-t border-lavender/10 dark:border-white/5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" /> Secure 256-bit Donations
-            </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
               <BadgeCheck className="w-4 h-4 text-lavender" /> 100% Verified Campaigns
             </div>
@@ -99,20 +84,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Floating Widget 1: Emergency Fund */}
-          <motion.div
-            className="absolute top-8 -left-6 bg-white/95 dark:bg-dark/95 backdrop-blur-md p-4 rounded-2xl border border-lavender/25 shadow-xl flex items-center gap-3 hidden sm:flex"
-            whileHover={{ y: -6, scale: 1.03 }}
-          >
-            <div className="w-10 h-10 rounded-full bg-peach/20 flex items-center justify-center text-lg animate-pulse">🏥</div>
-            <div className="text-left">
-              <h5 className="text-xs font-bold font-outfit text-dark dark:text-cream leading-tight">Bruno’s Vet Surgery</h5>
-              <p className="text-[10px] font-semibold text-lavender leading-tight">$820 raised of $1,000</p>
-              <div className="w-24 h-1.5 bg-gray-200 dark:bg-white/10 rounded-full mt-1.5 overflow-hidden">
-                <div className="h-full bg-lavender w-[82%]"></div>
-              </div>
-            </div>
-          </motion.div>
 
           {/* Floating Widget 2: Recovery Badge */}
           <motion.div
@@ -135,10 +106,7 @@ export default function Hero() {
             <h4 className="text-2xl md:text-3xl font-extrabold font-outfit text-dark dark:text-cream tracking-tight">4,820+</h4>
             <p className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Pets Saved</p>
           </div>
-          <div className="space-y-1">
-            <h4 className="text-2xl md:text-3xl font-extrabold font-outfit text-lavender tracking-tight">$128,450</h4>
-            <p className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Funds Raised</p>
-          </div>
+
           <div className="space-y-1">
             <h4 className="text-2xl md:text-3xl font-extrabold font-outfit text-peach tracking-tight">24 Active</h4>
             <p className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Verified NGOs</p>

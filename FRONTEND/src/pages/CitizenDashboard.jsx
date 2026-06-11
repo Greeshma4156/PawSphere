@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getRescues, reportRescue } from '../services/rescueService';
-import { getCampaigns } from '../services/donationService';
 import { useUIStore } from '../store/uiStore';
 import {
   Compass,
@@ -43,6 +42,21 @@ import {
 import CapacityCard from '../components/shelter/CapacityCard';
 import MedicalPassportCard from '../components/shelter/MedicalPassportCard';
 import EmptyState from '../components/common/EmptyState';
+
+const DISPLAY_STATUS = {
+  pending: 'pending',
+  assigned: 'assigned',
+  on_the_way: 'on the way',
+  rescued: 'rescued',
+  treatment: 'rescued',
+  sheltered: 'rescued',
+  safe: 'rescued',
+  adopted: 'rescued',
+};
+
+const getDisplayStatus = (status) => {
+  return DISPLAY_STATUS[status] || String(status || '').replace(/_/g, ' ');
+};
 
 // ── Medical Log and Vaccination Forms ──────────────────────────────────────
 
@@ -343,16 +357,6 @@ export default function CitizenDashboard() {
     };
   }, [queryClient]);
 
-  // F) Donation Campaign Preview
-  const { data: campaignsResp, isLoading: campaignsLoading } = useQuery({
-    queryKey: ['campaigns'],
-    queryFn: () => getCampaigns().then((r) => r.data || r),
-  });
-  const campaigns = Array.isArray(campaignsResp?.data)
-    ? campaignsResp.data
-    : Array.isArray(campaignsResp)
-      ? campaignsResp
-      : [];
 
   const quickActions = [
     {
@@ -367,12 +371,7 @@ export default function CitizenDashboard() {
       icon: <Send className="w-5 h-5" />,
       onClick: () => document.getElementById('emergency-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     },
-    {
-      title: 'Donate',
-      subtitle: 'Support treatment & triage',
-      icon: <HeartHandshake className="w-5 h-5" />,
-      onClick: () => navigate('/donations'),
-    },
+
     {
       title: 'Chat Support',
       subtitle: 'Open your case workspace',
@@ -613,7 +612,7 @@ export default function CitizenDashboard() {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">
-                              {r.animalType} • {String(r.status).replace(/_/g, ' ')}
+                              {r.animalType} • {getDisplayStatus(r.status)}
                             </div>
                             <div className="mt-1 font-extrabold text-xs text-dark dark:text-cream line-clamp-1">{r.title}</div>
                             <div className="mt-1 text-[10px] text-gray-500 dark:text-gray-400">{getElapsedLabel(r.createdAt)}</div>
@@ -644,33 +643,7 @@ export default function CitizenDashboard() {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] bg-white/75 dark:bg-dark/75 backdrop-blur-md border border-lavender/20 dark:border-white/10 p-5">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <HeartHandshake className="w-4 h-4 text-peach" />
-                    <h3 className="font-extrabold text-dark dark:text-cream">Donation Campaign Preview</h3>
-                  </div>
-                  <a href="/donations" className="text-xs font-extrabold text-lavender hover:underline">View all</a>
-                </div>
 
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {campaignsLoading ? (
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Loading campaigns…</div>
-                  ) : (
-                    campaigns.slice(0, 6).map((c) => (
-                      <Link
-                        key={c._id}
-                        to="/donations"
-                        className="p-4 rounded-2xl border border-lavender/10 bg-beige/20 dark:bg-white/5 hover:border-lavender/30 transition-all"
-                      >
-                        <div className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">{c.isCompleted ? 'Completed' : 'Active'}</div>
-                        <div className="mt-2 font-extrabold text-xs text-dark dark:text-cream line-clamp-1">{c.title}</div>
-                        <div className="mt-2 text-[10px] text-gray-500 dark:text-gray-400">Raised ${c.raisedAmount ?? 0} / ${c.targetAmount ?? 0}</div>
-                      </Link>
-                    ))
-                  )}
-                </div>
-              </div>
             </section>
           </div>
 

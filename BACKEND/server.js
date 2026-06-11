@@ -24,7 +24,6 @@ import {
 import authRoutes from './routes/v1/authRoutes.js';
 import rescueRoutes from './routes/v1/rescueRoutes.js';
 import volunteerRoutes from './routes/v1/volunteerRoutes.js';
-import donationRoutes from './routes/v1/donationRoutes.js';
 import adoptionRoutes from './routes/v1/adoptionRoutes.js';
 import shelterRoutes from './routes/v1/shelterRoutes.js';
 
@@ -82,7 +81,6 @@ app.use(setupXss());
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/rescues', rescueRoutes);
 app.use('/api/v1/volunteers', volunteerRoutes);
-app.use('/api/v1/donations', donationRoutes);
 app.use('/api/v1/adoptions', adoptionRoutes);
 app.use('/api/v1/shelters', shelterRoutes);
 

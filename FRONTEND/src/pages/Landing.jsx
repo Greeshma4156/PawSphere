@@ -7,7 +7,6 @@ import TimelineEngine from '../components/landing/TimelineEngine';
 
 const LiveRescueFeedSection = lazy(() => import('../components/landing/LiveRescueFeedSection.jsx'));
 const InteractiveMapPreview = lazy(() => import('../components/landing/InteractiveMapPreview.jsx'));
-const DonationImpactPreview = lazy(() => import('../components/landing/DonationImpactPreview.jsx'));
 const ShelterAdoptionPreview = lazy(() => import('../components/landing/ShelterAdoptionPreview.jsx'));
 const PremiumFooter = lazy(() => import('../components/landing/PremiumFooter.jsx'));
 
@@ -37,12 +36,7 @@ export default function Landing() {
       {/* 3. PREMIUM BENTO FEATURES */}
       <BentoFeatures />
 
-      {/* 4. DONATION & IMPACT */}
-      <Suspense fallback={<Skeleton className="h-[420px] my-6 mx-6" />}>
-        <DonationImpactPreview />
-      </Suspense>
-
-      {/* 5. SHELTER & ADOPTION PREVIEW */}
+      {/* 4. SHELTER & ADOPTION PREVIEW */}
       <Suspense fallback={<Skeleton className="h-[520px] my-6 mx-6" />}>
         <ShelterAdoptionPreview />
       </Suspense>
