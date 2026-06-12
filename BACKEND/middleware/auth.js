@@ -24,8 +24,21 @@ export const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretpawkey_123');
 
     // Fetch user and attach to request
-    // If MongoDB is offline, use decodes as fallback
-    let user = await User.findById(decoded.id);
+    // If MongoDB is offline, use in-memory DB or decodes as fallback
+    let user;
+    const { getDBStatus } = await import('../config/db.js');
+    const useInMemory = !getDBStatus();
+
+    if (useInMemory) {
+      const { users: inMemoryUsers } = await import('../utils/inMemoryDb.js');
+      user = inMemoryUsers.find((u) => u._id === decoded.id);
+    } else {
+      const mongoose = await import('mongoose');
+      if (mongoose.default.Types.ObjectId.isValid(decoded.id)) {
+        user = await User.findById(decoded.id);
+      }
+    }
+
     if (!user) {
       // Create a mock user object representing the verified JWT session
       // if mongoose failed to find it or if we are running in in-memory mode
