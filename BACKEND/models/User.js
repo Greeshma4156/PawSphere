@@ -108,16 +108,17 @@ UserSchema.index({ location: '2dsphere' });
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 // Sign JWT and return
 UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET || 'supersecretpawkey_123', {
-    expiresIn: process.env.JWT_EXPIRE || '30d',
+    expiresIn: process.env.JWT_EXPIRE || '10h',
   });
 };
 

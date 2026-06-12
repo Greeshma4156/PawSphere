@@ -585,7 +585,7 @@ export default function CitizenDashboard() {
             </div>
           </div>
 
-          {/* Active Tracking + Nearby Feed + Donations */}
+          {/* Active Tracking + Nearby Feed */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <section className="lg:col-span-1 space-y-4">
               <div className="rounded-[2rem] bg-white/75 dark:bg-dark/75 backdrop-blur-md border border-lavender/20 dark:border-white/10 p-5">

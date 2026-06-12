@@ -256,14 +256,7 @@ export default function RescueCasePage() {
           >
             View on Map
           </button>
-          {user?.role === 'citizen' && (
-            <Link
-              to="/donations"
-              className="px-4 py-2.5 rounded-2xl bg-lavender text-white text-xs font-extrabold hover:bg-lavender-light transition-all"
-            >
-              Donate to Medical Campaign
-            </Link>
-          )}
+
         </div>
       </div>
 
@@ -492,30 +485,7 @@ export default function RescueCasePage() {
             </div>
           </div>
 
-          {/* Donation sidebar — links to rescue-specific campaigns */}
-          <div className="rounded-[2rem] bg-white/75 dark:bg-dark/75 backdrop-blur-md border border-lavender/20 dark:border-white/10 p-5">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-peach" />
-              <h3 className="font-extrabold text-dark dark:text-cream">Medical Campaign Support</h3>
-            </div>
-            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
-              Help fund treatment, triage, and post-rescue care for <span className="font-bold text-dark dark:text-cream">{rescue?.title || 'this animal'}</span>.
-            </p>
-            <div className="mt-4 flex flex-col gap-2">
-              <button
-                onClick={() => navigate(`/donations?rescue=${id}`)}
-                className="w-full py-2.5 rounded-2xl bg-lavender text-white text-xs font-extrabold hover:bg-lavender-light transition-all"
-              >
-                Donate to This Rescue
-              </button>
-              <button
-                onClick={() => navigate('/donations')}
-                className="w-full py-2.5 rounded-2xl bg-beige/40 dark:bg-white/5 border border-lavender/15 text-dark dark:text-cream text-xs font-bold hover:bg-lavender/10 transition-all"
-              >
-                Browse All Campaigns
-              </button>
-            </div>
-          </div>
+
         </section>
       </div>
     </div>

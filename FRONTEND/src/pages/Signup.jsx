@@ -40,7 +40,7 @@ export default function Signup() {
         queryClient.clear();
         resetAuthInterceptor();
         setUser(user, token);
-        navigate(`/dashboard/${user.role}`);
+        navigate('/');
       } else {
         setServerError(error || 'Signup failed');
       }

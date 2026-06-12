@@ -99,6 +99,44 @@
   animation: pulse-glow 4s ease-in-out infinite;
 }
 
+/* Dashboard progress ring */
+@keyframes progress-ring {
+  from { stroke-dashoffset: var(--ring-circumference, 283); }
+  to { stroke-dashoffset: var(--ring-offset, 0); }
+}
+
+.animate-progress-ring {
+  animation: progress-ring 1.2s ease-out forwards;
+}
+
+/* Gradient border shimmer */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Shimmer loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(183,156,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Leaflet maps custom stylings */
 .leaflet-container {
   border-radius: 1.5rem;
